@@ -1,0 +1,478 @@
+/* ====== RESET E BASE ====== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #F8F9FA;
+  color: #264653;
+}
+
+/* ====== CABEÇALHO ====== */
+header {
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  height: 45px;
+  width: auto;
+}
+
+.logo h1 {
+  font-size: 1.5rem;
+  color: #264653;
+  font-weight: 600;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: #264653;
+  font-weight: 500;
+  transition: color 0.3s;
+  display: block;
+}
+
+nav a:hover {
+  color: #F4A261;
+}
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background: #264653;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+/* ====== MENU RESPONSIVO ====== */
+@media (max-width: 768px) {
+  nav {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: white;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease;
+    padding-left: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  nav.open {
+    max-height: 250px;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem 0;
+  }
+
+  nav a {
+    font-size: 1.1rem;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -8px);
+  }
+}
+
+/* ====== HERO (BLOCO PRINCIPAL) ====== */
+.hero {
+  background: linear-gradient(180deg, #6EC1E4 0%, #5AB6DA 100%);
+  padding: 90px 20px 80px;
+  text-align: center;
+  margin-top: 70px;
+  color: #fff;
+}
+
+.hero h2 {
+  font-size: 2.6rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+}
+
+/* ====== BARRA DE PESQUISA ====== */
+.search-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.search-wrapper {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  border-radius: 50px;
+  overflow: hidden;
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.search-icon {
+  color: #264653;
+  font-size: 1.4rem;
+  margin-left: 18px;
+}
+
+.search-wrapper input {
+  border: none;
+  flex: 1;
+  padding: 16px;
+  font-size: 1rem;
+  outline: none;
+  color: #264653;
+}
+
+.search-wrapper input::placeholder {
+  color: #888;
+}
+
+.search-wrapper button {
+  background-color: #F4A261;
+  color: #fff;
+  border: none;
+  padding: 12px 26px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+  position: relative;
+  right: 6px;
+}
+
+.search-wrapper button:hover {
+  background-color: #e98b3d;
+}
+
+/* ====== BOTÕES DE CADASTRO E LOGIN ====== */
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.hero-buttons button {
+  border: none;
+  border-radius: 50px;
+  padding: 16px 45px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hero-buttons .btn-register {
+  background-color: #F4A261;
+  color: #fff;
+}
+
+.hero-buttons .btn-register:hover {
+  background-color: #e98b3d;
+}
+
+.hero-buttons .btn-login {
+  background-color: #264653;
+  color: #fff;
+}
+
+.hero-buttons .btn-login:hover {
+  background-color: #1e3741;
+}
+
+/* ====== BOTÃO LOCALIZAÇÃO ====== */
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.controls #btnLocate {
+  background-color: #264653;
+  color: #fff;
+  border: none;
+  padding: 14px 34px;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+}
+
+.controls #btnLocate:hover {
+  background-color: #1e3741;
+}
+
+/* ====== TEXTO ABAIXO ====== */
+.hero-message {
+  margin-top: 30px;
+  text-align: center;
+  color: #264653;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* ====== MAPA (AJUSTADO PARA NÃO SOBREPOR ELEMENTOS) ====== */
+#map {
+  height: 300px;
+  width: 100%;
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1; /* Mapa abaixo de tudo */
+}
+
+/* Corrige sobreposição dos botões do Leaflet */
+.leaflet-control-container {
+  z-index: 400 !important;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 400 !important;
+}
+
+.leaflet-control-zoom {
+  margin-top: 10px;
+  margin-left: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* ====== LISTA DE LOJAS ====== */
+.list {
+  max-width: 1100px;
+  margin: 40px auto;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  padding: 0 1rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.card img.main {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.card-content {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-loja {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #6EC1E4;
+}
+
+.textos strong {
+  font-size: 1rem;
+  color: #264653;
+  display: block;
+}
+
+.descricao {
+  color: #555;
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.categoria {
+  color: #6EC1E4;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.ver-mais {
+  color: #F4A261;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+/* ====== RESPONSIVIDADE EXTRA ====== */
+@media (max-width: 600px) {
+  .search-wrapper {
+    width: 95%;
+    padding-right: 8px;
+  }
+
+  .search-wrapper input {
+    padding: 14px;
+    font-size: 0.95rem;
+  }
+
+  .search-wrapper button {
+    padding: 10px 18px;
+    font-size: 0.95rem;
+  }
+
+  .list {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .card {
+    margin: 0 auto;
+    width: 95%;
+  }
+
+  .card-content {
+    padding: 12px;
+  }
+
+  .info {
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .logo-loja {
+    width: 45px;
+    height: 45px;
+  }
+
+  .textos strong {
+    font-size: 0.95rem;
+  }
+
+  .descricao {
+    font-size: 0.85rem;
+  }
+}
+
+/* ====== RODAPÉ ====== */
+footer {
+  background: #264653;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  margin-top: auto;
+}
+
+/* ====== MODAL DE IMAGEM ====== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal img {
+  max-width: 90%;
+  max-height: 80%;
+  border-radius: 10px;
+}
+
+.modal.active {
+  display: flex;
+}

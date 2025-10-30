@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conecta Vizinhos</title>
+  <link rel="stylesheet" href="CSS/index.css">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <img src="IMAGENS/logo.png" alt="Logo Conecta Vizinhos">
+      <h1>Conecta Vizinhos</h1>
+    </div>
+    <div class="menu-toggle" id="menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <nav id="nav">
+      <ul>
+        <li><a href="#">Início</a></li>
+        <li><a href="#">Lojas do seu lado</a></li>
+        <li><a href="#">Sobre nós</a></li>
+        <li><a href="#">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Seção principal -->
+  <section class="hero">
+    <h2>Descubra os negócios da sua comunidade</h2>
+    <p>Encontre os melhores lugares e serviços locais no seu bairro.</p>
+
+    <!-- Barra de pesquisa -->
+    <div class="search-box">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Pesquisar..." />
+        <button>Pesquisar</button>
+      </div>
+    </div>
+
+    <!-- Botão de localização -->
+    <div class="controls">
+      <button id="btnLocate" class="primary">📍 Usar minha localização</button>
+    </div>
+
+    <!-- Texto e botões adicionais -->
+    <p class="hero-message">Faça a diferença nos negócios da sua comunidade</p>
+    <div class="hero-buttons">
+      <button class="btn-register">Cadastre-se</button>
+      <button class="btn-login">Login</button>
+    </div>
+  </section>
+
+  <!-- Mapa -->
+  <div id="map"></div>
+
+  <!-- Lista de lojas -->
+  <div id="storeList" class="list"></div>
+
+  <footer>
+    © 2025 - Conecta Vizinhos | Feito com ❤️ para a comunidade
+  </footer>
+
+  <div id="imageModal" class="modal" onclick="this.classList.remove('active')">
+    <img src="" alt="Imagem ampliada" id="modalImg">
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="JS/index.js"></script>
+</body>
+
+</html>
