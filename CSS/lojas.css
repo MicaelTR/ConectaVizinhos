@@ -1,0 +1,48 @@
+/* ====== HERO LOJAS ====== */
+.hero {
+  background: none; /* Remove o fundo azul */
+  padding: 100px 20px 40px; /* Ajusta espaço superior e inferior */
+  text-align: center;
+  color: #264653;
+  margin-top: 70px; /* Para compensar header fixo */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.hero h2 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.hero p {
+  font-size: 1.1rem;
+}
+
+/* ====== BARRA DE PESQUISA ====== */
+.search-box {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  justify-content: center;
+}
+
+.search-wrapper {
+  width: 100%;
+}
+
+/* ====== BOTÃO DE LOCALIZAÇÃO ====== */
+.controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* ====== BOTÕES DE CADASTRO/LOGIN ====== */
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 15px;
+}

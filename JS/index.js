@@ -1,6 +1,7 @@
 const menuToggle = document.getElementById('menu-toggle');
 const nav = document.getElementById('nav');
 const mapDiv = document.getElementById('map');
+
 menuToggle.addEventListener('click', () => {
     nav.classList.toggle('open');
     menuToggle.classList.toggle('active');
@@ -18,6 +19,9 @@ let userMarker = null;
 let storeMarkers = [];
 const btn = document.getElementById('btnLocate');
 const list = document.getElementById('storeList');
+
+// Elemento do título (fica acima das lojas)
+const storeSectionTitle = document.getElementById('storeSectionTitle');
 
 const fakeStores = [
     {
@@ -59,16 +63,48 @@ const fakeStores = [
         lon: -46.635,
         imagem: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
         logo: "https://cdn-icons-png.flaticon.com/512/857/857681.png"
+    },
+        {
+        nome: "Lanchonete Sabor Local",
+        categoria: "Lanchonete",
+        descricao: "Lanches rápidos e deliciosos feitos com carinho.",
+        endereco: "Praça das Árvores, 15",
+        lat: -23.550,
+        lon: -46.635,
+        imagem: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
+        logo: "https://cdn-icons-png.flaticon.com/512/857/857681.png"
+    },
+        {
+        nome: "Lanchonete Sabor Local",
+        categoria: "Lanchonete",
+        descricao: "Lanches rápidos e deliciosos feitos com carinho.",
+        endereco: "Praça das Árvores, 15",
+        lat: -23.550,
+        lon: -46.635,
+        imagem: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
+        logo: "https://cdn-icons-png.flaticon.com/512/857/857681.png"
     }
+    
 ];
 
-const userIcon = L.icon({ iconUrl: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png', iconSize: [24, 24], iconAnchor: [12, 24] });
-const shopIcon = L.icon({ iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png', iconSize: [24, 24], iconAnchor: [12, 24] });
+const userIcon = L.icon({
+    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+    iconSize: [24, 24],
+    iconAnchor: [12, 24]
+});
+const shopIcon = L.icon({
+    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+    iconSize: [24, 24],
+    iconAnchor: [12, 24]
+});
 
 function renderStores(stores) {
     storeMarkers.forEach(m => map.removeLayer(m));
     storeMarkers = [];
     list.innerHTML = '';
+
+    // Garante que o título da seção apareça
+    storeSectionTitle.style.display = "block";
 
     stores.forEach(s => {
         const marker = L.marker([s.lat, s.lon], { icon: shopIcon }).addTo(map);
@@ -117,7 +153,10 @@ btn.addEventListener('click', () => {
         mapDiv.style.display = "block"; // Mostra o mapa
         setTimeout(() => map.invalidateSize(), 100); // Corrige o tamanho
         if (userMarker) map.removeLayer(userMarker);
-        userMarker = L.marker([latitude, longitude], { icon: userIcon }).addTo(map).bindPopup("Você está aqui").openPopup();
+        userMarker = L.marker([latitude, longitude], { icon: userIcon })
+            .addTo(map)
+            .bindPopup("Você está aqui")
+            .openPopup();
         map.setView([latitude, longitude], 15);
         renderStores(fakeStores);
         btn.textContent = "📍 Usar minha localização";

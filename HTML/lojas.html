@@ -4,20 +4,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Conecta Vizinhos</title>
-  <link rel="stylesheet" href="CSS/index.css">
+  <title>Conecta Vizinhos - Lojas</title>
+  <link rel="stylesheet" href="../CSS/index.css">
+  <link rel="stylesheet" href="../CSS/lojas.css">
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <!-- Font Awesome para ícones -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+
 </head>
 
 <body>
+  <!-- HEADER -->
   <header>
     <div class="logo">
-      <img src="IMAGENS/logo.png" alt="Logo Conecta Vizinhos">
+      <img src="../IMAGENS/logo.png" alt="Logo Conecta Vizinhos">
       <h1>Conecta Vizinhos</h1>
     </div>
     <div class="menu-toggle" id="menu-toggle">
@@ -27,19 +31,16 @@
     </div>
     <nav id="nav">
       <ul>
-        <li><a href="#inicio">Início</a></li>
-        <li><a href="HTML/lojas.html">Lojas do seu lado</a></li>
+        <li><a href="../index.html">Início</a></li>
+        <li><a href="#lojas">Lojas do seu lado</a></li>
         <li><a href="#sobre">Sobre nós</a></li>
         <li><a href="#contato">Contato</a></li>
       </ul>
     </nav>
   </header>
 
-  <!-- Seção principal -->
-  <section id="inicio" class="hero">
-    <h2>Descubra os negócios da sua comunidade</h2>
-    <p>Encontre os melhores lugares e serviços locais no seu bairro.</p>
-
+  <!-- HERO / PESQUISA / BOTÃO LOCALIZAÇÃO -->
+  <section class="hero">
     <!-- Barra de pesquisa -->
     <div class="search-box">
       <div class="search-wrapper">
@@ -53,26 +54,18 @@
     <div class="controls">
       <button id="btnLocate" class="primary">📍 Usar minha localização</button>
     </div>
-
-    <!-- Texto e botões adicionais -->
-    <p class="hero-message">Faça a diferença nos negócios da sua comunidade</p>
-    <div class="hero-buttons">
-      <button class="btn-register">Cadastre-se</button>
-      <button class="btn-login">Login</button>
-    </div>
   </section>
 
-  <!-- Mapa -->
+  <!-- MAPA -->
   <div id="map"></div>
 
+  <!-- Lista de Lojas -->
   <h2 id="storeSectionTitle" class="titulo-lojas" style="display:none;">
     Melhores Avaliadas
   </h2>
-
-  <!-- Lista de lojas -->
   <div id="storeList" class="list"></div>
 
-  <!-- Footer Completo -->
+  <!-- FOOTER -->
   <footer id="contato">
     <div class="footer-container">
       <!-- Coluna 1: Sobre -->
@@ -85,7 +78,7 @@
       <div class="footer-col">
         <h3><i class="fa-solid fa-link"></i> Links Rápidos</h3>
         <ul>
-          <li><a href="#inicio"><i class="fa-solid fa-house"></i> Início</a></li>
+          <li><a href="../index.html"><i class="fa-solid fa-house"></i> Início</a></li>
           <li><a href="#lojas"><i class="fa-solid fa-store"></i> Lojas próximas</a></li>
           <li><a href="#sobre"><i class="fa-solid fa-circle-info"></i> Sobre nós</a></li>
           <li><a href="#contato"><i class="fa-solid fa-envelope"></i> Contato</a></li>
@@ -118,12 +111,14 @@
     </div>
   </footer>
 
+  <!-- MODAL DE IMAGEM -->
   <div id="imageModal" class="modal" onclick="this.classList.remove('active')">
     <img src="" alt="Imagem ampliada" id="modalImg">
   </div>
 
+  <!-- SCRIPTS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="JS/index.js"></script>
+  <script src="../JS/index.js"></script>
 </body>
 
 </html>
