@@ -207,12 +207,46 @@ nav a:hover {
   background-color: #e98b3d;
 }
 
-/* ====== BOTÕES DE CADASTRO E LOGIN ====== */
+/* ====== BOTÃO LOCALIZAÇÃO ====== */
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.controls #btnLocate {
+  background-color: #264653;
+  color: #fff;
+  border: none;
+  padding: 14px 34px;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+}
+
+.controls #btnLocate:hover {
+  background-color: #1e3741;
+}
+
+/* ====== TEXTO E BOTÕES ABAIXO ====== */
+.hero-message {
+  margin-top: 30px;
+  text-align: center;
+  color: #264653;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
 .hero-buttons {
   display: flex;
   justify-content: center;
   gap: 25px;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 .hero-buttons button {
@@ -244,68 +278,19 @@ nav a:hover {
   background-color: #1e3741;
 }
 
-/* ====== BOTÃO LOCALIZAÇÃO ====== */
-.controls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.controls #btnLocate {
-  background-color: #264653;
-  color: #fff;
-  border: none;
-  padding: 14px 34px;
-  border-radius: 50px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  margin-top: 10px;
-}
-
-.controls #btnLocate:hover {
-  background-color: #1e3741;
-}
-
-/* ====== TEXTO ABAIXO ====== */
-.hero-message {
-  margin-top: 30px;
-  text-align: center;
-  color: #264653;
-  font-size: 1.2rem;
-  font-weight: 500;
-}
-
-/* ====== MAPA (AJUSTADO PARA NÃO SOBREPOR ELEMENTOS) ====== */
+/* ====== MAPA ====== */
 #map {
   height: 300px;
   width: 100%;
   margin-top: 20px;
+  display: none;
   border-radius: 10px;
   overflow: hidden;
-  position: relative;
-  z-index: 1; /* Mapa abaixo de tudo */
+  z-index: 1; /* garante que os controles fiquem por cima do mapa, mas atrás do conteúdo */
 }
 
-/* Corrige sobreposição dos botões do Leaflet */
 .leaflet-control-container {
-  z-index: 400 !important;
-}
-
-.leaflet-top,
-.leaflet-bottom {
-  z-index: 400 !important;
-}
-
-.leaflet-control-zoom {
-  margin-top: 10px;
-  margin-left: 10px;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  z-index: 500 !important; /* mantém os botões + e - acima do mapa mas abaixo de menus */
 }
 
 /* ====== LISTA DE LOJAS ====== */
@@ -395,9 +380,11 @@ nav a:hover {
 
 /* ====== RESPONSIVIDADE EXTRA ====== */
 @media (max-width: 600px) {
+
+  /* Corrige a barra de busca */
   .search-wrapper {
     width: 95%;
-    padding-right: 8px;
+    padding-right: 4px; /* ajuste mínimo */
   }
 
   .search-wrapper input {
@@ -406,10 +393,13 @@ nav a:hover {
   }
 
   .search-wrapper button {
-    padding: 10px 18px;
-    font-size: 0.95rem;
+    padding: 8px 12px; /* botão menor pra caber */
+    font-size: 0.9rem;
+    right: 2px;
+    min-width: 0;
   }
 
+  /* Corrige grid das lojas */
   .list {
     grid-template-columns: 1fr;
     gap: 18px;
@@ -424,6 +414,7 @@ nav a:hover {
     padding: 12px;
   }
 
+  /* Ajusta posição da logo e nome da loja */
   .info {
     justify-content: flex-start;
     gap: 10px;
