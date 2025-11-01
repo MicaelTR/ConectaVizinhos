@@ -5,16 +5,98 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Conecta Vizinhos - Lojas</title>
-  <link rel="stylesheet" href="../CSS/index.css">
+
+  <!-- CSS principal -->
   <link rel="stylesheet" href="../CSS/lojas.css">
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <!-- Font Awesome para ícones -->
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
+  <style>
+    /* ====== SPINNER E TRANSIÇÃO ====== */
+    #storeList {
+      transition: opacity 0.3s ease;
+      opacity: 1;
+    }
 
+    .spinner {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 20px auto;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .loader {
+      border: 4px solid #e0e0e0;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ====== FILTROS ====== */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 15px;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .filters label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    .filters select {
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #fff;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .filters .primary {
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .filters .primary:hover {
+      background: #2980b9;
+    }
+  </style>
 </head>
 
 <body>
@@ -41,7 +123,6 @@
 
   <!-- HERO / PESQUISA / BOTÃO LOCALIZAÇÃO -->
   <section class="hero">
-    <!-- Barra de pesquisa -->
     <div class="search-box">
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
@@ -50,31 +131,71 @@
       </div>
     </div>
 
-    <!-- Botão de localização -->
     <div class="controls">
       <button id="btnLocate" class="primary">📍 Usar minha localização</button>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="filters">
+      <label>
+        Categoria:
+        <select id="filterCategory">
+          <option value="todas">Todas</option>
+          <option value="mercado">Mercados</option>
+          <option value="farmacia">Farmácias</option>
+          <option value="restaurante">Restaurantes</option>
+          <option value="padaria">Padarias</option>
+          <option value="petshop">Pet Shops</option>
+        </select>
+      </label>
+
+      <label>
+        Avaliação mínima:
+        <select id="filterRating">
+          <option value="0">Todas</option>
+          <option value="4">⭐ 4+</option>
+          <option value="3">⭐ 3+</option>
+          <option value="2">⭐ 2+</option>
+        </select>
+      </label>
+
+      <label>
+        Horário de funcionamento:
+        <select id="filterHorario">
+          <option value="todos">Todos</option>
+          <option value="aberto">Aberto agora</option>
+          <option value="fechado">Fechado</option>
+        </select>
+      </label>
+
+      <button id="btnFilter" class="primary">Aplicar Filtros</button>
     </div>
   </section>
 
   <!-- MAPA -->
   <div id="map"></div>
 
-  <!-- Lista de Lojas -->
+  <!-- LISTA DE LOJAS -->
   <h2 id="storeSectionTitle" class="titulo-lojas" style="display:none;">
     Melhores Avaliadas
   </h2>
+
+  <!-- 🔹 SPINNER DE CARREGAMENTO -->
+  <div id="loadingSpinner" class="spinner">
+    <div class="loader"></div>
+    <p>Carregando lojas...</p>
+  </div>
+
   <div id="storeList" class="list"></div>
 
   <!-- FOOTER -->
   <footer id="contato">
     <div class="footer-container">
-      <!-- Coluna 1: Sobre -->
       <div class="footer-col">
         <h3><i class="fa-solid fa-users"></i> Sobre o Conecta Vizinhos</h3>
         <p>O Conecta Vizinhos ajuda você a descobrir e apoiar negócios locais, fortalecendo sua comunidade e o comércio do seu bairro.</p>
       </div>
 
-      <!-- Coluna 2: Links rápidos -->
       <div class="footer-col">
         <h3><i class="fa-solid fa-link"></i> Links Rápidos</h3>
         <ul>
@@ -85,7 +206,6 @@
         </ul>
       </div>
 
-      <!-- Coluna 3: Redes sociais -->
       <div class="footer-col">
         <h3><i class="fa-solid fa-share-nodes"></i> Redes Sociais</h3>
         <div class="social-icons">
@@ -97,7 +217,6 @@
         </div>
       </div>
 
-      <!-- Coluna 4: Contato -->
       <div class="footer-col">
         <h3><i class="fa-solid fa-phone"></i> Contato</h3>
         <p><i class="fa-solid fa-envelope"></i> contato@conectavizinhos.com</p>
