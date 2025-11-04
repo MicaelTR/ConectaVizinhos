@@ -3,148 +3,220 @@
 // ================================
 
 // ELEMENTOS
-const map = L.map("map").setView([-23.55052, -46.633308], 13);
-const list = document.getElementById("storeList");
-const spinner = document.getElementById("loadingSpinner");
-const title = document.getElementById("storeSectionTitle");
+const mapDiv = document.getElementById('map');
+const btnLocate = document.getElementById('btnLocate');
+const list = document.getElementById('storeList');
+const title = document.getElementById('storeSectionTitle');
 
 // ================================
-//  MAPA LEAFLET
+//  MAPA (inicialmente invisível)
 // ================================
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: '© OpenStreetMap',
+const map = L.map('map').setView([-23.55, -46.63], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap'
 }).addTo(map);
+mapDiv.style.display = "none";
+
+let userMarker = null;
+let storeMarkers = [];
+let lojasCache = []; // cache local das lojas da API
+
+const userIcon = L.icon({
+  iconUrl: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+  iconSize: [24, 24],
+  iconAnchor: [12, 24]
+});
+const shopIcon = L.icon({
+  iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+  iconSize: [24, 24],
+  iconAnchor: [12, 24]
+});
 
 // ================================
-//  DADOS FICTÍCIOS DE LOJAS
+//  RENDERIZA OS CARDS DE LOJAS
 // ================================
-const fakeStores = [
-  {
-    nome: "Padaria Pão da Vila",
-    categoria: "Padaria",
-    endereco: "Rua das Flores, 123",
-    avaliacao: 4.8,
-    horario: { abre: 6, fecha: 20 },
-    imagem: "../IMAGENS/loja1.jpg",
-  },
-  {
-    nome: "Mercadinho São José",
-    categoria: "Mercado",
-    endereco: "Av. Central, 456",
-    avaliacao: 4.5,
-    horario: { abre: 8, fecha: 22 },
-    imagem: "../IMAGENS/loja2.jpg",
-  },
-  {
-    nome: "Farmácia Popular",
-    categoria: "Farmácia",
-    endereco: "Rua das Palmeiras, 77",
-    avaliacao: 4.9,
-    horario: { abre: 7, fecha: 23 },
-    imagem: "../IMAGENS/loja3.jpg",
-  },
-];
+function renderStores(stores) {
+  list.innerHTML = '';
+  storeMarkers.forEach(m => map.removeLayer(m));
+  storeMarkers = [];
 
-// ================================
-//  FUNÇÃO DE HORÁRIO
-// ================================
-function estaAberta(loja, hora = new Date()) {
-  const h = hora.getHours();
-  return h >= loja.horario.abre && h < loja.horario.fecha;
-}
-
-// ================================
-//  RENDERIZA AS LOJAS
-// ================================
-function renderStores(lojas) {
-  list.innerHTML = "";
-
-  if (lojas.length === 0) {
+  if (!stores || stores.length === 0) {
     list.innerHTML = "<p style='text-align:center;'>Nenhuma loja encontrada.</p>";
     return;
   }
 
-  lojas.forEach((loja) => {
-    const aberta = estaAberta(loja);
-    const card = document.createElement("div");
-    card.className = "store-card";
+  title.style.display = "block";
 
+  stores.forEach(s => {
+    // marcador no mapa
+    if (s.lat && s.lon) {
+      const marker = L.marker([s.lat, s.lon], { icon: shopIcon }).addTo(map);
+      marker.bindPopup(`<strong>${s.nome}</strong><br>${s.endereco}`);
+      storeMarkers.push(marker);
+    }
+
+    // card visual
+    const card = document.createElement('div');
+    card.className = 'card';
     card.innerHTML = `
-      <img src="${loja.imagem}" alt="${loja.nome}" onclick="abrirModal('${loja.imagem}')">
-      <h3>${loja.nome}</h3>
-      <p>${loja.endereco}</p>
-      <p><strong>Categoria:</strong> ${loja.categoria}</p>
-      <p><strong>Avaliação:</strong> ⭐ ${loja.avaliacao}</p>
-      <p class="${aberta ? "aberta" : "fechada"}">${aberta ? "Aberta agora" : "Fechada"}</p>
+      <img src="${s.imagem}" alt="${s.nome}" class="main" onclick="openImage('${s.imagem}')">
+      <div class="card-content">
+        <div class="info">
+          <img src="${s.logo}" class="logo-loja" alt="Logo ${s.nome}">
+          <div class="textos">
+            <strong>${s.nome}</strong>
+            <div class="small">${s.endereco}</div>
+          </div>
+        </div>
+        <p class="descricao">${s.descricao || ""}</p>
+        <div class="bottom-row">
+          <div class="categoria">${s.categoria}</div>
+          <a class="ver-mais" href="javascript:void(0)" onclick="openImage('${s.imagem}')">Ver mais</a>
+        </div>
+      </div>
     `;
     list.appendChild(card);
   });
-
-  title.style.display = "block";
 }
 
 // ================================
-//  EFEITOS DE TRANSIÇÃO
+//  MODAL DE IMAGEM
 // ================================
-function fadeOutList(callback) {
-  list.style.opacity = 0;
-  setTimeout(callback, 300);
+function openImage(url) {
+  const modal = document.getElementById('imageModal');
+  const img = document.getElementById('modalImg');
+  img.src = url;
+  modal.classList.add('active');
 }
 
-function fadeInList() {
-  list.style.opacity = 1;
+// ================================
+//  BUSCAR LOJAS DA API
+// ================================
+async function carregarLojas() {
+  try {
+    const res = await fetch('http://localhost:3000/lojas');
+    if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
+    const data = await res.json();
+
+    lojasCache = data; // salva no cache para filtros
+    renderStores(data);
+  } catch (err) {
+    console.error("❌ Erro na API:", err);
+    list.innerHTML = `
+      <div style="text-align:center; padding:20px; color:#c00;">
+        ⚠️ Erro ao carregar as lojas.<br>
+        <small>${err.message}</small>
+      </div>
+    `;
+  }
+}
+
+// ================================
+//  PESQUISA POR NOME
+// ================================
+const searchInput = document.getElementById('searchInput');
+
+if (searchInput) {
+  searchInput.addEventListener('input', async (e) => {
+    const valor = e.target.value.trim();
+
+    // se o campo estiver vazio, mostra todas
+    if (valor === "") {
+      renderStores(lojasCache);
+      return;
+    }
+
+    try {
+      const res = await fetch(`http://localhost:3000/lojas?nome=${encodeURIComponent(valor)}`);
+      if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
+      const data = await res.json();
+      renderStores(data);
+    } catch (err) {
+      console.error("❌ Erro na pesquisa:", err);
+    }
+  });
 }
 
 // ================================
 //  BOTÃO LOCALIZAÇÃO
 // ================================
-document.getElementById("btnLocate").addEventListener("click", () => {
+btnLocate.addEventListener('click', () => {
   if (!navigator.geolocation) {
     alert("Seu navegador não suporta geolocalização.");
     return;
   }
 
-  fadeOutList(() => {
-    list.style.display = "none";
-    spinner.style.display = "flex";
+  btnLocate.textContent = "Localizando...";
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        map.setView([latitude, longitude], 15);
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const { latitude, longitude } = pos.coords;
 
-        // marcador do usuário
-        L.marker([latitude, longitude]).addTo(map)
-          .bindPopup("Você está aqui!")
-          .openPopup();
+      mapDiv.style.display = "block";
+      setTimeout(() => map.invalidateSize(), 100);
 
-        // simula carregamento das lojas
-        setTimeout(() => {
-          spinner.style.display = "none";
-          list.style.display = "grid";
-          renderStores(fakeStores);
-          fadeInList();
-        }, 1000);
-      },
-      () => {
-        spinner.style.display = "none";
-        alert("Não foi possível obter sua localização.");
-      }
-    );
-  });
+      if (userMarker) map.removeLayer(userMarker);
+      userMarker = L.marker([latitude, longitude], { icon: userIcon })
+        .addTo(map)
+        .bindPopup("Você está aqui")
+        .openPopup();
+
+      map.setView([latitude, longitude], 15);
+      carregarLojas();
+
+      btnLocate.textContent = "📍 Usar minha localização";
+    },
+    err => {
+      alert("Não foi possível obter sua localização: " + err.message);
+      btnLocate.textContent = "📍 Usar minha localização";
+    },
+    { enableHighAccuracy: true }
+  );
 });
 
 // ================================
-//  MODAL DE IMAGEM
+//  FILTROS
 // ================================
-function abrirModal(src) {
-  const modal = document.getElementById("imageModal");
-  const img = document.getElementById("modalImg");
-  img.src = src;
-  modal.classList.add("active");
-}
+document.getElementById('btnFilter').addEventListener('click', () => {
+  const categoria = document.getElementById('filterCategory').value;
+  const avaliacaoMin = parseFloat(document.getElementById('filterRating').value);
+  const horario = document.getElementById('filterHorario').value;
+
+  if (!lojasCache || lojasCache.length === 0) {
+    alert("Nenhuma loja carregada ainda!");
+    return;
+  }
+
+  const agora = new Date();
+  const horaAtual = agora.getHours();
+
+  const filtradas = lojasCache.filter(loja => {
+    // Filtro por categoria
+    const categoriaOk = categoria === "todas" || loja.categoria === categoria;
+
+    // Filtro por avaliação (se existir no JSON)
+    const avaliacaoOk = !loja.avaliacao || loja.avaliacao >= avaliacaoMin;
+
+    // Filtro por horário (se loja tiver campos "abre" e "fecha")
+    let horarioOk = true;
+    if (horario === "aberto" && loja.abre && loja.fecha) {
+      const abre = parseInt(loja.abre.split(":")[0]);
+      const fecha = parseInt(loja.fecha.split(":")[0]);
+      horarioOk = horaAtual >= abre && horaAtual < fecha;
+    } else if (horario === "fechado" && loja.abre && loja.fecha) {
+      const abre = parseInt(loja.abre.split(":")[0]);
+      const fecha = parseInt(loja.fecha.split(":")[0]);
+      horarioOk = horaAtual < abre || horaAtual >= fecha;
+    }
+
+    return categoriaOk && avaliacaoOk && horarioOk;
+  });
+
+  renderStores(filtradas);
+});
 
 // ================================
 //  INICIALIZAÇÃO
 // ================================
-renderStores(fakeStores);
+carregarLojas();

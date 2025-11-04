@@ -126,8 +126,7 @@
     <div class="search-box">
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
-        <input type="text" placeholder="Pesquisar..." />
-        <button>Pesquisar</button>
+        <input type="text" id="searchInput" placeholder="Pesquisar..." />
       </div>
     </div>
 
@@ -177,14 +176,8 @@
 
   <!-- LISTA DE LOJAS -->
   <h2 id="storeSectionTitle" class="titulo-lojas" style="display:none;">
-    Melhores Avaliadas
+    Lojas Parceiras
   </h2>
-
-  <!-- 🔹 SPINNER DE CARREGAMENTO -->
-  <div id="loadingSpinner" class="spinner">
-    <div class="loader"></div>
-    <p>Carregando lojas...</p>
-  </div>
 
   <div id="storeList" class="list"></div>
 
@@ -237,7 +230,7 @@
 
   <!-- SCRIPTS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="../JS/index.js"></script>
+  <script src="../JS/lojas.js"></script>
 </body>
 
 </html>
