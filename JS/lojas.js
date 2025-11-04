@@ -8,6 +8,17 @@ const btnLocate = document.getElementById('btnLocate');
 const list = document.getElementById('storeList');
 const title = document.getElementById('storeSectionTitle');
 
+
+
+const menuToggle = document.getElementById('menu-toggle');
+const nav = document.getElementById('nav');
+
+
+menuToggle.addEventListener('click', () => {
+    nav.classList.toggle('open');
+    menuToggle.classList.toggle('active');
+});
+
 // ================================
 //  MAPA (inicialmente invisível)
 // ================================
@@ -72,7 +83,7 @@ function renderStores(stores) {
         <p class="descricao">${s.descricao || ""}</p>
         <div class="bottom-row">
           <div class="categoria">${s.categoria}</div>
-          <a class="ver-mais" href="javascript:void(0)" onclick="openImage('${s.imagem}')">Ver mais</a>
+          <a class="ver-mais" href="perfil.html?id=${s.id}">Ver mais</a>
         </div>
       </div>
     `;
