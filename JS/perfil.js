@@ -15,7 +15,7 @@ const params = new URLSearchParams(window.location.search);
 const lojaId = params.get("id");
 
 let lojaTelefone = "";
-let produtoSelecionado = "";
+let carrinho = []; // Array do carrinho
 
 // === CARREGAR INFORMAÇÕES DA LOJA ===
 async function carregarLoja() {
@@ -34,12 +34,16 @@ async function carregarLoja() {
     document.getElementById("descricao").textContent = loja.descricao;
     document.getElementById("endereco").textContent = `📍 ${loja.endereco}`;
     document.getElementById("horario").textContent = `🕒 ${loja.abre} - ${loja.fecha}`;
-    document.getElementById("motoboy").textContent = loja.motoboy ? "🛵 Possui motoboy próprio" : "🚫 Não possui motoboy próprio";
+    document.getElementById("motoboy").textContent = loja.motoboy
+      ? "🛵 Possui motoboy próprio"
+      : "🚫 Não possui motoboy próprio";
 
-    lojaTelefone = loja.telefone || ""; // Salva telefone da loja
+    lojaTelefone = loja.telefone || "";
+
     carregarProdutos();
   } catch (err) {
     console.error("Erro ao carregar loja:", err);
+    document.body.innerHTML = "<p>Erro ao carregar dados da loja.</p>";
   }
 }
 
@@ -56,48 +60,137 @@ async function carregarProdutos() {
       return;
     }
 
-    produtos.forEach(prod => {
+    produtos.forEach((prod, index) => {
       const card = document.createElement("div");
       card.className = "card-produto";
       card.innerHTML = `
-        <img src="https://source.unsplash.com/400x300/?${encodeURIComponent(prod.nome)}" alt="${prod.nome}">
+        <img src="${prod.imagem || 'https://via.placeholder.com/400x300?text=Sem+Imagem'}" alt="${prod.nome}">
         <div class="conteudo">
           <h3>${prod.nome}</h3>
           <p>${prod.descricao || "Produto da loja"}</p>
           <p class="preco">R$ ${prod.preco.toFixed(2)}</p>
-          <button class="btn-comprar" onclick="abrirModal('${prod.nome}')">Comprar</button>
+          <button class="btn-comprar" onclick="adicionarAoCarrinho(${index})">Adicionar ao carrinho</button>
         </div>
       `;
       container.appendChild(card);
     });
+
+    // Armazena produtos para uso no carrinho
+    window.produtosLoja = produtos;
+
   } catch (err) {
     console.error("Erro ao carregar produtos:", err);
   }
 }
 
-// === MODAL DE COMPRA ===
-function abrirModal(produto) {
-  produtoSelecionado = produto;
-  const modal = document.getElementById("modalCompra");
-  const msg = document.getElementById("mensagemModal");
+// === FUNÇÕES DO CARRINHO ===
+function adicionarAoCarrinho(index) {
+  const produto = window.produtosLoja[index];
 
-  msg.innerText = `Olá! Gostaria de comprar o produto ${produto}. Deseja confirmar o pedido?`;
+  // Verifica se já existe no carrinho
+  const existente = carrinho.find(item => item.nome === produto.nome);
+  if (existente) {
+    existente.quantidade += 1;
+  } else {
+    carrinho.push({ ...produto, quantidade: 1 });
+  }
+
+  atualizarContador();
+  alert(`${produto.nome} adicionado ao carrinho!`);
+}
+
+function atualizarContador() {
+  const contador = document.getElementById("contador-carrinho");
+  const total = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
+  contador.textContent = total;
+}
+
+// === MODAL DO CARRINHO ===
+function abrirCarrinho() {
+  const modal = document.getElementById("modalCarrinho");
+  const itensContainer = document.getElementById("itensCarrinho");
+  const totalEl = document.getElementById("totalCarrinho");
+
+  itensContainer.innerHTML = "";
+
+  if (carrinho.length === 0) {
+    itensContainer.innerHTML = "<p>Seu carrinho está vazio.</p>";
+    totalEl.textContent = "Total: R$ 0,00";
+  } else {
+    carrinho.forEach((item, idx) => {
+      const div = document.createElement("div");
+      div.className = "item-carrinho";
+      div.innerHTML = `
+      <img src="${item.imagem || 'https://via.placeholder.com/120'}" alt="${item.nome}">
+      <div class="info-produto">
+        <span class="nome-produto">${item.nome}</span>
+        <span class="preco-produto">R$ ${item.preco.toFixed(2)}</span>
+        <div class="quantidade-produto">
+          <button onclick="alterarQuantidade(${idx}, -1)">-</button>
+          <span>${item.quantidade}</span>
+          <button onclick="alterarQuantidade(${idx}, 1)">+</button>
+        </div>
+        <span class="remover-produto" onclick="removerItem(${idx})">🗑️</span>
+      </div>
+      `;
+
+      itensContainer.appendChild(div);
+    });
+
+    const total = carrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
+    totalEl.textContent = `Total: R$ ${total.toFixed(2)}`;
+  }
+
   modal.style.display = "flex";
 }
 
-function fecharModal() {
-  document.getElementById("modalCompra").style.display = "none";
+function fecharCarrinho() {
+  document.getElementById("modalCarrinho").style.display = "none";
 }
 
-function confirmarCompra() {
-  if (!lojaTelefone) {
-    alert("Número da loja não disponível.");
+function alterarQuantidade(idx, delta) {
+  carrinho[idx].quantidade += delta;
+  if (carrinho[idx].quantidade <= 0) {
+    carrinho.splice(idx, 1);
+  }
+  atualizarContador();
+  abrirCarrinho(); // Atualiza modal
+}
+
+function removerItem(idx) {
+  carrinho.splice(idx, 1);
+  atualizarContador();
+  abrirCarrinho();
+}
+
+// === FINALIZAR PEDIDO ===
+function finalizarPedido() {
+  if (carrinho.length === 0) {
+    alert("Seu carrinho está vazio!");
     return;
   }
 
-  const mensagem = encodeURIComponent(`Olá! Gostaria de comprar o produto ${produtoSelecionado}.`);
-  window.open(`https://wa.me/${lojaTelefone}?text=${mensagem}`, "_blank");
-  fecharModal();
+  if (!lojaTelefone || lojaTelefone.trim() === "") {
+    alert("Esta loja ainda não possui WhatsApp cadastrado.");
+    return;
+  }
+
+  const nomeLoja = document.getElementById("nome").textContent || "sua loja";
+
+  let mensagem = `Olá ${nomeLoja}! Gostaria de fazer o pedido:\n\n`;
+  carrinho.forEach(item => {
+    mensagem += `- ${item.nome} x ${item.quantidade}\n`;
+  });
+  const total = carrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
+  mensagem += `\nTotal: R$ ${total.toFixed(2)}`;
+
+  const url = `https://wa.me/${lojaTelefone}?text=${encodeURIComponent(mensagem)}`;
+  window.open(url, "_blank");
+
+  // Limpa o carrinho
+  carrinho = [];
+  atualizarContador();
+  fecharCarrinho();
 }
 
 // === INICIALIZAÇÃO ===

@@ -121,17 +121,28 @@
     </nav>
   </header>
 
-  <!-- HERO / PESQUISA / BOTÃO LOCALIZAÇÃO -->
+  <!-- HERO / BOTÃO LOCALIZAÇÃO / MAPA / TÍTULO / PESQUISA -->
   <section class="hero">
+
+    <!-- BOTÃO DE LOCALIZAÇÃO -->
+    <div class="controls">
+      <button id="btnLocate" class="primary">📍 Usar minha localização</button>
+    </div>
+
+    <!-- MAPA -->
+    <div id="map"></div>
+
+    <!-- TÍTULO LOJAS -->
+    <h2 id="storeSectionTitle" class="titulo-lojas" style="display:none;">
+      Lojas Parceiras
+    </h2>
+
+    <!-- BARRA DE PESQUISA -->
     <div class="search-box">
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
         <input type="text" id="searchInput" placeholder="Pesquisar..." />
       </div>
-    </div>
-
-    <div class="controls">
-      <button id="btnLocate" class="primary">📍 Usar minha localização</button>
     </div>
 
     <!-- FILTROS -->
@@ -169,16 +180,10 @@
 
       <button id="btnFilter" class="primary">Aplicar Filtros</button>
     </div>
+
   </section>
 
-  <!-- MAPA -->
-  <div id="map"></div>
-
   <!-- LISTA DE LOJAS -->
-  <h2 id="storeSectionTitle" class="titulo-lojas" style="display:none;">
-    Lojas Parceiras
-  </h2>
-
   <div id="storeList" class="list"></div>
 
   <!-- FOOTER -->
@@ -193,7 +198,7 @@
         <h3><i class="fa-solid fa-link"></i> Links Rápidos</h3>
         <ul>
           <li><a href="../index.html"><i class="fa-solid fa-house"></i> Início</a></li>
-          <li><a href="#lojas"><i class="fa-solid fa-store"></i> Lojas próximas</a></li>
+          <li><a href="#"><i class="fa-solid fa-store"></i> Lojas próximas</a></li>
           <li><a href="#sobre"><i class="fa-solid fa-circle-info"></i> Sobre nós</a></li>
           <li><a href="#contato"><i class="fa-solid fa-envelope"></i> Contato</a></li>
         </ul>

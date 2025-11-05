@@ -28,7 +28,8 @@ let lojas = [
     banner: "https://images.unsplash.com/photo-1509440159596-0249088772ff",
     abre: "06:00",
     fecha: "20:00",
-    motoboy: true
+    motoboy: true,
+    telefone: "5511999992222"
   },
   {
     id: 2,
@@ -43,7 +44,8 @@ let lojas = [
     banner: "https://images.unsplash.com/photo-1556761175-4b46a572b786",
     abre: "08:00",
     fecha: "22:00",
-    motoboy: false
+    motoboy: false,
+    telefone: "5511999992222"
   },
   {
     id: 3,
@@ -58,7 +60,8 @@ let lojas = [
     banner: "https://images.unsplash.com/photo-1584367369853-8a1a7a7dfb3f",
     abre: "07:00",
     fecha: "23:00",
-    motoboy: true
+    motoboy: true,
+    telefone: "5511999992222"
   },
   {
     id: 4,
@@ -70,10 +73,11 @@ let lojas = [
     lon: -46.635,
     imagem: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
     logo: "https://cdn-icons-png.flaticon.com/512/857/857681.png",
-    banner: "https://images.unsplash.com/photo-1601924582971-b2b1c3d4c8d5",
+    banner: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
     abre: "10:00",
     fecha: "02:00",
-    motoboy: true
+    motoboy: true,
+    telefone: "5511999998888"
   }
 ];
 
@@ -82,30 +86,91 @@ let lojas = [
 // ==========================
 const produtos = {
   1: [
-    { nome: "Pão Francês", preco: 0.80 },
-    { nome: "Bolo de Fubá", preco: 12.00 },
-    { nome: "Sonho", preco: 6.50 }
+    {
+      nome: "Pão Francês",
+      preco: 0.80,
+      descricao: "Fresco, crocante e assado na hora.",
+      imagem: "https://images.unsplash.com/photo-1608198093002-ad4e0054842b"
+    },
+    {
+      nome: "Bolo de Fubá",
+      preco: 12.00,
+      descricao: "Tradicional, fofinho e com gostinho de infância.",
+      imagem: "https://images.unsplash.com/photo-1601972599720-b7a5e7c0e5b8"
+    },
+    {
+      nome: "Sonho",
+      preco: 6.50,
+      descricao: "Recheado com creme e polvilhado com açúcar.",
+      imagem: "https://images.unsplash.com/photo-1589387873277-5f9b3a5f9a32"
+    }
   ],
   2: [
-    { nome: "Arroz 5kg", preco: 25.90 },
-    { nome: "Feijão Carioca 1kg", preco: 8.50 },
-    { nome: "Leite Integral 1L", preco: 6.90 }
+    {
+      nome: "Arroz 5kg",
+      preco: 25.90,
+      descricao: "Arroz branco tipo 1, pacote de 5kg.",
+      imagem: "https://images.unsplash.com/photo-1586201375754-257d0bca5c1e"
+    },
+    {
+      nome: "Feijão Carioca 1kg",
+      preco: 8.50,
+      descricao: "Feijão tipo 1, grãos selecionados.",
+      imagem: "https://images.unsplash.com/photo-1601050690597-9b02a6ac32c7"
+    },
+    {
+      nome: "Leite Integral 1L",
+      preco: 6.90,
+      descricao: "Leite integral de qualidade.",
+      imagem: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b"
+    }
   ],
   3: [
-    { nome: "Dipirona 500mg", preco: 10.00 },
-    { nome: "Vitamina C 1g", preco: 15.00 },
-    { nome: "Paracetamol", preco: 8.00 }
+    {
+      nome: "Dipirona 500mg",
+      preco: 10.00,
+      descricao: "Analgésico e antitérmico.",
+      imagem: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b"
+    },
+    {
+      nome: "Vitamina C 1g",
+      preco: 15.00,
+      descricao: "Fortalece o sistema imunológico.",
+      imagem: "https://images.unsplash.com/photo-1606813902735-67d9e49e2e34"
+    },
+    {
+      nome: "Paracetamol",
+      preco: 8.00,
+      descricao: "Analgésico e antipirético de uso comum.",
+      imagem: "https://images.unsplash.com/photo-1584824486539-53bb4646bdbc"
+    }
   ],
   4: [
-    { nome: "X-Salada", preco: 18.00 },
-    { nome: "Batata Frita", preco: 10.00 },
-    { nome: "Coca-Cola Lata", preco: 6.00 }
+    {
+      nome: "X-Salada",
+      preco: 18.00,
+      descricao: "Hambúrguer artesanal com queijo e salada.",
+      imagem: "https://images.unsplash.com/photo-1550547660-d9450f859349"
+    },
+    {
+      nome: "Batata Frita",
+      preco: 10.00,
+      descricao: "Crocante por fora e macia por dentro.",
+      imagem: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5"
+    },
+    {
+      nome: "Coca-Cola Lata",
+      preco: 6.00,
+      descricao: "Bebida gelada para acompanhar o lanche.",
+      imagem: "https://images.unsplash.com/photo-1565958011705-44e21199e8d4"
+    }
   ]
 };
 
+
 // ==========================
 //  Rotas da API
-// ==========================
+// ==========================a
 
 // 🟢 Listar todas as lojas
 app.get('/lojas', (req, res) => {

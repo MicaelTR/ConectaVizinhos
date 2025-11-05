@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro de Loja - Conecta Vizinhos</title>
+<link rel="stylesheet" href="../CSS/cadastro.css">
+</head>
+<body>
+<div class="container">
+    <h2>Cadastro de Loja</h2>
+    <form id="cadastroLojaForm">
+        <label>Nome da Loja</label>
+        <input type="text" name="nome" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Senha</label>
+        <input type="password" name="senha" required>
+
+        <label>Endereço</label>
+        <input type="text" name="endereco" required>
+
+        <label>WhatsApp</label>
+        <input type="text" name="whatsapp" required>
+
+        <label>Categoria (Selecione ou escreva abaixo)</label>
+        <select name="categoriaSelect">
+            <option value="">Selecione</option>
+            <option value="padaria">Padaria</option>
+            <option value="mercado">Mercado</option>
+            <option value="farmacia">Farmácia</option>
+            <option value="restaurante">Restaurante</option>
+            <option value="petshop">Pet Shop</option>
+        </select>
+
+        <label>Outra categoria (opcional)</label>
+        <input type="text" name="categoriaTexto" placeholder="Digite a categoria da sua loja">
+
+        <div class="checkbox-group">
+            <input type="checkbox" name="motoboyProprio" value="true">
+            <label>Possui motoboy próprio?</label>
+        </div>
+
+        <label>Logo</label>
+        <input type="file" name="logo" accept="image/*" required>
+
+        <label>Banner</label>
+        <input type="file" name="banner" accept="image/*" required>
+
+        <button type="submit">Cadastrar Loja</button>
+    </form>
+</div>
+
+<script src="../JS/cadastro.js"></script>
+</body>
+</html>

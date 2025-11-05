@@ -48,6 +48,10 @@
         <div><i class="fa-solid fa-clock"></i> <span id="horario">08:00 - 18:00</span></div>
         <div><i class="fa-solid fa-location-dot"></i> <span id="endereco">Rua Exemplo, 123 - Bairro</span></div>
         <div><i class="fa-solid fa-motorcycle"></i> <span id="motoboy">Possui motoboy próprio: Sim</span></div>
+        <div class="carrinho-info" onclick="abrirCarrinho()">
+          <i class="fa-solid fa-cart-shopping" id="icone-carrinho"></i>
+          <span id="contador-carrinho">0</span>
+        </div>
       </div>
     </section>
 
@@ -55,43 +59,44 @@
     <section class="produtos-container">
       <h2>Produtos</h2>
       <div id="lista-produtos" class="produtos-grid">
-        <!-- Exemplo de card de produto -->
-        <div class="produto-card">
-          <img src="../IMAGENS/produto-exemplo.jpg" alt="Produto Exemplo">
-          <h3 class="produto-nome">Produto Exemplo</h3>
-          <p class="produto-descricao">Descrição breve do produto.</p>
-          <p class="produto-preco">R$ 29,90</p>
-          <button class="btn-comprar" data-produto="Produto Exemplo">Comprar</button>
-        </div>
-        <!-- Os demais produtos virão via API -->
+        <!-- Produtos virão via API -->
       </div>
     </section>
 
   </main>
 
-  <!-- Modal de confirmação -->
-  <div id="modalCompra" class="modal">
-    <div class="modal-content">
-      <span class="fechar">&times;</span>
-      <h3>Confirmar Pedido</h3>
-      <p id="mensagemCompra"></p>
-      <button id="confirmarCompra" class="btn-confirmar">Confirmar e Enviar pelo WhatsApp</button>
+  <!-- Modal do Carrinho -->
+  <div id="modalCarrinho" class="modal-carrinho">
+    <div class="modal-carrinho-content">
+      <div class="modal-carrinho-header">
+        <h3>Seu Carrinho</h3>
+        <span class="fechar-carrinho" onclick="fecharCarrinho()">&times;</span>
+      </div>
+      <div id="itensCarrinho" class="itens-carrinho">
+        <!-- Produtos adicionados via JS aparecerão aqui -->
+      </div>
+      <div class="modal-carrinho-footer">
+        <p id="totalCarrinho">Total: R$ 0,00</p>
+        <button class="btn-finalizar" onclick="finalizarPedido()">Finalizar Pedido</button>
+      </div>
     </div>
   </div>
+
 
   <!-- Footer -->
   <footer id="contato">
     <div class="footer-container">
       <div class="footer-col">
         <h3><i class="fa-solid fa-users"></i> Sobre o Conecta Vizinhos</h3>
-        <p>O Conecta Vizinhos ajuda você a descobrir e apoiar negócios locais, fortalecendo sua comunidade e o comércio do seu bairro.</p>
+        <p>O Conecta Vizinhos ajuda você a descobrir e apoiar negócios locais, fortalecendo sua comunidade e o comércio
+          do seu bairro.</p>
       </div>
 
       <div class="footer-col">
         <h3><i class="fa-solid fa-link"></i> Links Rápidos</h3>
         <ul>
-          <li><a href="#inicio"><i class="fa-solid fa-house"></i> Início</a></li>
-          <li><a href="#lojas"><i class="fa-solid fa-store"></i> Lojas próximas</a></li>
+          <li><a href="../index.html"><i class="fa-solid fa-house"></i> Início</a></li>
+          <li><a href="../HTML/lojas.html"><i class="fa-solid fa-store"></i> Lojas próximas</a></li>
           <li><a href="#sobre"><i class="fa-solid fa-circle-info"></i> Sobre nós</a></li>
           <li><a href="#contato"><i class="fa-solid fa-envelope"></i> Contato</a></li>
         </ul>
