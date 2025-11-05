@@ -15,8 +15,8 @@ const nav = document.getElementById('nav');
 
 
 menuToggle.addEventListener('click', () => {
-    nav.classList.toggle('open');
-    menuToggle.classList.toggle('active');
+  nav.classList.toggle('open');
+  menuToggle.classList.toggle('active');
 });
 
 // ================================
@@ -71,21 +71,23 @@ function renderStores(stores) {
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `
-      <img src="${s.imagem}" alt="${s.nome}" class="main" onclick="openImage('${s.imagem}')">
-      <div class="card-content">
-        <div class="info">
-          <img src="${s.logo}" class="logo-loja" alt="Logo ${s.nome}">
-          <div class="textos">
-            <strong>${s.nome}</strong>
-            <div class="small">${s.endereco}</div>
+    <a class="card-link" href="perfil.html?id=${s.id}">  
+      <img src="${s.imagem}" alt="${s.nome}" class="main"">
+        <div class="card-content">
+          <div class="info">
+            <img src="${s.logo}" class="logo-loja" alt="Logo ${s.nome}">
+            <div class="textos">
+              <strong>${s.nome}</strong>
+              <div class="small">${s.endereco}</div>
+            </div>
+          </div>
+          <p class="descricao">${s.descricao || ""}</p>
+          <div class="bottom-row">
+            <div class="categoria">${s.categoria}</div>
+            <a class="ver-mais" href="perfil.html?id=${s.id}">Ver mais</a>
           </div>
         </div>
-        <p class="descricao">${s.descricao || ""}</p>
-        <div class="bottom-row">
-          <div class="categoria">${s.categoria}</div>
-          <a class="ver-mais" href="perfil.html?id=${s.id}">Ver mais</a>
-        </div>
-      </div>
+      </a>
     `;
     list.appendChild(card);
   });

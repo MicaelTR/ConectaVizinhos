@@ -307,6 +307,11 @@ nav a:hover {
   padding: 0 1rem;
 }
 
+.card-link {
+  list-style: none;
+  text-decoration: none;
+}
+
 .card {
   background: #fff;
   border-radius: 14px;
@@ -357,7 +362,7 @@ nav a:hover {
 }
 
 .descricao {
-  color: #555;
+  color: #264653;
   font-size: 0.85rem;
   line-height: 1.3;
 }
