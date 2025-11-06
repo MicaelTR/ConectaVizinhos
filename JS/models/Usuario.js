@@ -6,6 +6,8 @@ const usuarioSchema = new mongoose.Schema({
   dataNascimento: { type: Date, required: true },
   email: { type: String, required: true, unique: true },
   senha: { type: String, required: true },
+  tipo: { type: String, default: 'usuario' }, // tipo de usuário (padrão)
+  fotoPerfil: { type: String, default: null }, // caminho da foto de perfil
 }, { timestamps: true });
 
 // Antes de salvar, criptografa a senha
@@ -16,8 +18,8 @@ usuarioSchema.pre('save', async function (next) {
 });
 
 // Método para comparar senha no login
-usuarioSchema.methods.compararSenha = function (senhaDigitada) {
-  return bcrypt.compare(senhaDigitada, this.senha);
+usuarioSchema.methods.compararSenha = async function (senhaDigitada) {
+  return await bcrypt.compare(senhaDigitada, this.senha);
 };
 
 module.exports = mongoose.model('Usuario', usuarioSchema);
