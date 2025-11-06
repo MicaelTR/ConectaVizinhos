@@ -1,102 +1,224 @@
-/* ======== RESET BÁSICO ======== */
+/* ====== RESET E BASE ====== */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", Arial, sans-serif;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f4f6f9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+  background: #F8F9FA;
+  color: #264653;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-/* ======== CONTAINER PRINCIPAL ======== */
-.container {
-    background: #ffffff;
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 500px;
+/* ====== CARD PRINCIPAL ====== */
+.cadastro-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 420px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.5s ease;
 }
 
-/* ======== TÍTULO ======== */
-.container h2 {
-    text-align: center;
-    font-size: 1.8rem;
-    color: #333;
-    margin-bottom: 25px;
+/* ====== FORMULÁRIO ====== */
+.cadastro-form {
+  width: 100%;
 }
 
-/* ======== LABELS ======== */
-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: #555;
+.cadastro-form h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #264653;
+  text-align: center;
+  margin-bottom: 25px;
 }
 
-/* ======== INPUTS E SELECT ======== */
-input, select {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-bottom: 15px;
-    font-size: 1rem;
-    outline: none;
-    transition: border 0.3s, box-shadow 0.3s;
+.cadastro-form h4 {
+  font-size: 0.95rem;
+  color: #264653;
+  margin-bottom: 6px;
+  font-weight: 600;
 }
 
-input:focus, select:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 6px rgba(52,152,219,0.3);
+/* ====== CAMPOS DE ENTRADA ====== */
+.cadastro-form input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #264653;
+  margin-bottom: 18px;
+  background-color: #fff;
+  transition: all 0.2s ease;
 }
 
-/* ======== CHECKBOX ======== */
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    font-size: 0.95rem;
+.cadastro-form input:focus {
+  border-color: #6EC1E4;
+  box-shadow: 0 0 4px rgba(110, 193, 228, 0.5);
+  outline: none;
 }
 
-.checkbox-group input {
-    width: auto;
+/* ====== BOTÕES ====== */
+.end-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
+  gap: 10px;
 }
 
-/* ======== BOTÃO ======== */
 button {
+  flex: 1;
+  padding: 12px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+/* Cancelar */
+.button-cancel {
+  background-color: #E0E0E0;
+  color: #264653;
+}
+
+.button-cancel:hover {
+  background-color: #ccc;
+}
+
+/* Confirmar */
+.button-confirm {
+  background-color: #F4A261;
+  color: #fff;
+}
+
+.button-confirm:hover {
+  background-color: #e98b3d;
+}
+
+/* ====== ANIMAÇÃO ====== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ====== RESPONSIVIDADE ====== */
+@media (max-width: 480px) {
+  .cadastro-card {
+    width: 90%;
+    padding: 24px;
+  }
+
+  .cadastro-form h1 {
+    font-size: 1.6rem;
+  }
+
+  .end-buttons {
+    flex-direction: column;
+  }
+
+  .button-cancel,
+  .button-confirm {
     width: 100%;
-    padding: 12px;
-    background: #3498db;
-    color: #fff;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s, transform 0.2s;
+  }
 }
 
-button:hover {
-    background: #2980b9;
-    transform: translateY(-2px);
+
+/* ====== SETA DE VOLTAR ====== */
+.voltar-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  color: #264653;
+  font-size: 1.8rem;
+  cursor: pointer;
+  z-index: 2000;
+  transition: transform 0.2s, color 0.2s;
 }
 
-/* ======== INPUT FILE ======== */
-input[type="file"] {
-    padding: 6px;
+.voltar-btn:hover {
+  transform: scale(1.1);
+  color: #F4A261;
 }
 
-/* ======== RESPONSIVO ======== */
-@media (max-width: 600px) {
-    .container {
-        padding: 20px;
-    }
+
+/* Ajuste para mobile */
+@media (max-width: 480px) {
+  .voltar-btn {
+    top: 14px;
+    left: 14px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .voltar-btn i {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+
+/* ====== MODAL DE MENSAGEM (SUCESSO/ERRO) ====== */
+.custom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(38, 70, 83, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 3000;
+}
+
+.custom-modal.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.custom-modal-content {
+  background: #2A9D8F;
+  color: #fff;
+  padding: 22px 30px;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+  animation: fadeUp 0.4s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    transform: translateY(15px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ajuda e Suporte</title>
+    <link rel="stylesheet" href="../CSS/suporte.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <img src="../IMAGENS/logo.png" alt="Logo Conecta Vizinhos">
+            <h1>Conecta Vizinhos</h1>
+        </div>
+        <div class="menu-toggle" id="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav id="nav">
+            <ul>
+                <li><a href="../index.html">Início</a></li>
+                <li><a href="lojas.html">Lojas do seu lado</a></li>
+                <li><a href="#sobre">Sobre nós</a></li>
+                <li><a href="suporte.html">Suporte</a></li>
+                <li><a href="minhaconta.html">Minha Conta</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="faq-section">
+            <h2>Perguntas Frequentes</h2>
+
+            <details>
+                <summary>Como faço um pedido?</summary>
+                <p>Para fazer um pedido, navegue até a página do comércio desejado, selecione os itens e finalize o
+                    checkout.</p>
+            </details>
+
+            <details>
+                <summary>Problemas com pagamento</summary>
+                <p>Verifique se seu cartão está ativo e se há saldo suficiente antes de tentar novamente.</p>
+            </details>
+
+            <details>
+                <summary>Como avaliar um comércio?</summary>
+                <p>Após a entrega, acesse a seção “Pedidos” e clique em “Avaliar”.</p>
+            </details>
+
+            <details>
+                <summary>Gerenciamento da minha conta</summary>
+                <p>Vá até as configurações de perfil para editar suas informações pessoais.</p>
+            </details>
+        </div>
+
+        <h2>Ainda precisa de ajuda?</h2>
+        <p>Se não encontrou uma resposta, fale conosco. Nossa equipe responderá o mais breve possível.</p>
+
+        <form id="form-suporte">
+            <label>Categoria</label>
+            <select id="categoria">
+                <option>Problema com pedido</option>
+                <option>Problema com pagamento</option>
+                <option>Avaliação de comércio</option>
+                <option>Gerenciamento de conta</option>
+            </select>
+
+            <label>Seu e-mail</label>
+            <input type="email" id="email" placeholder="voce@email.com" required>
+
+            <label>Descreva seu problema</label>
+            <textarea id="mensagem" rows="5" placeholder="Digite sua mensagem aqui..." required></textarea>
+
+            <button type="submit">Enviar Mensagem</button>
+        </form>
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="contato">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3><i class="fa-solid fa-users"></i> Sobre o Conecta Vizinhos</h3>
+                <p>O Conecta Vizinhos ajuda você a descobrir e apoiar negócios locais, fortalecendo sua comunidade e o
+                    comércio do seu bairro.</p>
+            </div>
+
+            <div class="footer-col">
+                <h3><i class="fa-solid fa-link"></i> Links Rápidos</h3>
+                <ul>
+                    <li><a href="../index.html"><i class="fa-solid fa-house"></i> Início</a></li>
+                    <li><a href="lojas.html"><i class="fa-solid fa-store"></i> Lojas próximas</a></li>
+                    <li><a href="#sobre"><i class="fa-solid fa-circle-info"></i> Sobre nós</a></li>
+                    <li><a href="suporte.html"><i class="fa-solid fa-envelope"></i> Suporte</a></li>
+                    <li><a href="minhaconta.html"><i class="fa-solid fa-envelope"></i> Minha Conta</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3><i class="fa-solid fa-share-nodes"></i> Redes Sociais</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h3><i class="fa-solid fa-phone"></i> Contato</h3>
+                <p><i class="fa-solid fa-envelope"></i> contato@conectavizinhos.com</p>
+                <p><i class="fa-solid fa-phone"></i> (11) 98765-4321</p>
+                <p><i class="fa-solid fa-location-dot"></i> São Paulo - SP</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2025 - Conecta Vizinhos | Feito com ❤️ para a comunidade | Todos os Direitos Reservados</p>
+        </div>
+    </footer>
+</body>
+
+<script src="../JS/suporte.js"></script>
+
+</html>

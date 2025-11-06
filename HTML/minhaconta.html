@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta - Conecta Vizinhos</title>
+    <link rel="stylesheet" href="../CSS/minhaconta.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <img src="../IMAGENS/logo.png" alt="Logo Conecta Vizinhos">
+            <h1>Conecta Vizinhos</h1>
+        </div>
+        <div class="menu-toggle" id="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav id="nav">
+            <ul>
+                <li><a href="../index.html">Início</a></li>
+                <li><a href="lojas.html">Lojas do seu lado</a></li>
+                <li><a href="#sobre">Sobre nós</a></li>
+                <li><a href="suporte.html">Suporte</a></li>
+                <li><a href="minhaconta.html" class="active">Minha Conta</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main -->
+    <main>
+        <div class="account-card">
+            <img class="profile-pic" id="profileImage" src="https://via.placeholder.com/160" alt="Foto de Perfil"
+                onclick="document.getElementById('imageInput').click()">
+            <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="previewImage(event)">
+            <div class="account-info">
+                <div>
+                    <label for="nome">Nome</label>
+                    <p id="nome"></p>
+                </div>
+                <div>
+                    <label for="data-nascimento">Data de Nascimento</label>
+                    <p id="data-nascimento"></p>
+                </div>
+                <div>
+                    <label for="criado-em">Data de Criação da Conta</label>
+                    <p id="criado-em"></p>
+                </div>
+                <div>
+                    <label for="tipo-usuario">Tipo de Usuário</label>
+                    <p id="tipo-usuario"></p>
+                </div>
+                <div>
+                    <label for="email">E-mail</label>
+                    <p id="email"></p>
+                </div>
+                <button class="btn save-btn">Salvar Alterações</button>
+                <button class="btn logout-btn">Sair da Conta</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contato">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3><i class="fa-solid fa-users"></i> Sobre o Conecta Vizinhos</h3>
+                <p>O Conecta Vizinhos ajuda você a descobrir e apoiar negócios locais, fortalecendo sua comunidade e o comércio do seu bairro.</p>
+            </div>
+
+            <div class="footer-col">
+                <h3><i class="fa-solid fa-link"></i> Links Rápidos</h3>
+                <ul>
+                    <li><a href="../index.html"><i class="fa-solid fa-house"></i> Início</a></li>
+                    <li><a href="lojas.html"><i class="fa-solid fa-store"></i> Lojas próximas</a></li>
+                    <li><a href="#sobre"><i class="fa-solid fa-circle-info"></i> Sobre nós</a></li>
+                    <li><a href="suporte.html"><i class="fa-solid fa-envelope"></i> Suporte</a></li>
+                    <li><a href="minhaconta.html"><i class="fa-solid fa-user"></i> Minha Conta</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3><i class="fa-solid fa-share-nodes"></i> Redes Sociais</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h3><i class="fa-solid fa-phone"></i> Contato</h3>
+                <p><i class="fa-solid fa-envelope"></i> contato@conectavizinhos.com</p>
+                <p><i class="fa-solid fa-phone"></i> (11) 98765-4321</p>
+                <p><i class="fa-solid fa-location-dot"></i> São Paulo - SP</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2025 - Conecta Vizinhos | Feito com ❤️ para a comunidade | Todos os Direitos Reservados</p>
+        </div>
+    </footer>
+
+    <script src="../JS/minhaconta.js"></script>
+</body>
+
+</html>

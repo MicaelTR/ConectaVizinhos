@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Conecta Vizinhos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../CSS/login.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+  <div class="login-container">
+
+    <!-- Seta de voltar -->
+    <button class="back-button" onclick="history.back()">
+      <i data-lucide="arrow-left"></i>
+    </button>
+
+    <div class="login-card">
+      <form class="login-form">
+        <h1>Entrar</h1>
+
+        <h4>E-mail</h4>
+        <input type="email" class="input-email" placeholder="Digite seu e-mail" required>
+
+        <h4>Senha</h4>
+        <input type="password" class="input-senha" placeholder="Digite sua senha" required>
+
+        <button type="submit" class="button-login">Entrar</button>
+
+        <p class="signup-text">
+          Ainda não tem conta?
+          <a href="cadastro.html">Cadastre-se</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <script src="../JS/login.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+
+</html>

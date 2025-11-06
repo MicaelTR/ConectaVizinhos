@@ -19,17 +19,91 @@ const btn = document.getElementById('btnLocate');
 const list = document.getElementById('storeList');
 const storeSectionTitle = document.getElementById('storeSectionTitle');
 
-// Função para buscar lojas da API
+// Botões e área de boas-vindas
+const btnRegister = document.querySelector('.btn-register');
+const btnLogin = document.querySelector('.btn-login');
+
+// ================================
+// Verifica se o usuário está logado
+// ================================
+function checkLogin() {
+    const token = localStorage.getItem('token');
+    const nome = localStorage.getItem('nome'); 
+
+    const hero = document.querySelector('.hero');
+    // Remove mensagens ou botões anteriores
+    const existingMsg = document.querySelector('#welcome-msg');
+    const existingLogout = document.querySelector('#btnLogout');
+    if (existingMsg) existingMsg.remove();
+    if (existingLogout) existingLogout.remove();
+
+    if (token && nome) {
+        // Usuário logado: esconde botões de login/cadastro
+        if (btnRegister) btnRegister.style.display = 'none';
+        if (btnLogin) btnLogin.style.display = 'none';
+
+        // Cria mensagem de boas-vindas
+        const msg = document.createElement('p');
+        msg.id = 'welcome-msg';
+        msg.textContent = `Bem-vindo de volta, ${nome}!`;
+        msg.style.fontSize = '2rem'; // maior destaque
+        msg.style.marginTop = '20px';
+        msg.style.fontWeight = '700';
+        hero.appendChild(msg);
+
+        // Cria botão de logout estilizado
+        const logoutBtn = document.createElement('button');
+        logoutBtn.id = 'btnLogout';
+        logoutBtn.textContent = 'Sair';
+        logoutBtn.className = 'btn-logout primary'; // mesma classe dos outros botões hero
+        logoutBtn.style.marginTop = '15px';
+        logoutBtn.style.padding = '10px 25px';
+        logoutBtn.style.fontSize = '1rem';
+        logoutBtn.style.cursor = 'pointer';
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('nome');
+            location.reload();
+        });
+        hero.appendChild(logoutBtn);
+
+    } else {
+        // Não logado: mostra botões de login/cadastro
+        if (btnRegister) btnRegister.style.display = 'inline-block';
+        if (btnLogin) btnLogin.style.display = 'inline-block';
+    }
+}
+
+
+// Chama no carregamento da página
+checkLogin();
+
+// ==========================
+// Redirecionamento dos botões de cadastro e login
+// ==========================
+if (btnRegister) {
+    btnRegister.addEventListener('click', () => {
+        window.location.href = "HTML/cadastro.html";
+    });
+}
+
+if (btnLogin) {
+    btnLogin.addEventListener('click', () => {
+        window.location.href = "HTML/login.html";
+    });
+}
+
+// ==========================
+// Função para buscar lojas
+// ==========================
 async function fetchStores() {
     try {
-        // Substitua esta URL pela sua API real
         const response = await fetch('http://localhost:3000/lojas');
         if (!response.ok) throw new Error("Erro ao carregar lojas da API");
         const stores = await response.json();
         return stores;
     } catch (err) {
         console.error(err);
-        // Fallback: array vazio
         return [];
     }
 }
@@ -44,12 +118,10 @@ function renderStores(stores) {
     storeSectionTitle.style.display = "block";
 
     stores.forEach(s => {
-        // Adiciona marcador no mapa (ícone padrão)
         L.marker([s.lat, s.lon])
             .addTo(map)
             .bindPopup(`<strong>${s.nome}</strong><br>${s.endereco}`);
 
-        // Cria card da loja
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
@@ -80,7 +152,9 @@ function openImage(url) {
     modal.classList.add('active');
 }
 
+// ==========================
 // Botão de localização
+// ==========================
 btn.addEventListener('click', async () => {
     if (!navigator.geolocation) {
         alert("Seu navegador não suporta geolocalização.");
@@ -92,11 +166,9 @@ btn.addEventListener('click', async () => {
     navigator.geolocation.getCurrentPosition(async pos => {
         const { latitude, longitude } = pos.coords;
 
-        // Mostra o mapa e corrige tamanho
         mapDiv.style.display = "block";
         setTimeout(() => map.invalidateSize(), 100);
 
-        // Adiciona marcador do usuário (ícone padrão)
         L.marker([latitude, longitude])
             .addTo(map)
             .bindPopup("Você está aqui")
@@ -104,7 +176,6 @@ btn.addEventListener('click', async () => {
 
         map.setView([latitude, longitude], 15);
 
-        // Busca lojas da API
         const stores = await fetchStores();
         renderStores(stores);
 

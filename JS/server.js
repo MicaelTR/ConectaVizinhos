@@ -1,11 +1,12 @@
 // ==========================
-//  Conecta Vizinhos - API com MongoDB + Lojas + Usuários
+//  Conecta Vizinhos - API com MongoDB + Lojas + Usuários + JWT
 // ==========================
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const Usuario = require('./models/Usuario'); // Importa o schema do usuário
+const jwt = require('jsonwebtoken');
+const Usuario = require('./models/Usuario'); // Schema do usuário
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,6 +32,20 @@ function validarEmail(email) {
   return regex.test(email);
 }
 
+// Middleware para validar token JWT
+function autenticarToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // "Bearer token"
+
+  if (!token) return res.status(401).json({ error: 'Acesso negado. Token ausente.' });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ error: 'Token inválido ou expirado.' });
+    req.user = user; // dados do usuário decodificados
+    next();
+  });
+}
+
 // ==========================
 //  Rotas de Usuários (Cadastro e Login)
 // ==========================
@@ -38,10 +53,21 @@ function validarEmail(email) {
 // 🟢 Cadastro
 app.post('/usuarios/cadastro', async (req, res) => {
   try {
-    const { nome, dataNascimento, email, senha } = req.body;
+    let { nome, dataNascimento, email, senha } = req.body;
 
     if (!nome || !dataNascimento || !email || !senha) {
       return res.status(400).json({ error: 'Preencha todos os campos obrigatórios.' });
+    }
+
+    // Suporte para datas em formato DD/MM/YYYY
+    if (dataNascimento.includes('/')) {
+      const [dia, mes, ano] = dataNascimento.split('/');
+      dataNascimento = `${ano}-${mes}-${dia}`;
+    }
+
+    const dataValida = new Date(dataNascimento);
+    if (isNaN(dataValida.getTime())) {
+      return res.status(400).json({ error: 'Data de nascimento inválida.' });
     }
 
     if (!validarEmail(email)) {
@@ -57,7 +83,13 @@ app.post('/usuarios/cadastro', async (req, res) => {
       return res.status(400).json({ error: 'E-mail já cadastrado.' });
     }
 
-    const novoUsuario = new Usuario({ nome, dataNascimento, email, senha });
+    const novoUsuario = new Usuario({
+      nome,
+      dataNascimento: dataValida,
+      email,
+      senha
+    });
+
     await novoUsuario.save();
 
     res.status(201).json({ message: 'Usuário cadastrado com sucesso!' });
@@ -86,17 +118,42 @@ app.post('/usuarios/login', async (req, res) => {
       return res.status(401).json({ error: 'Senha incorreta.' });
     }
 
+    // Gerar token JWT
+    const token = jwt.sign(
+      { id: usuario._id, nome: usuario.nome, email: usuario.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' } // expira em 1 dia
+    );
+
     res.json({
       message: 'Login realizado com sucesso!',
       usuario: {
         id: usuario._id,
         nome: usuario.nome,
         email: usuario.email
-      }
+      },
+      token
     });
   } catch (err) {
     console.error('❌ Erro ao realizar login:', err);
     res.status(500).json({ error: 'Erro interno ao realizar login.' });
+  }
+});
+
+// 🟢 Rota protegida de exemplo
+app.get('/usuarios/meu-perfil', autenticarToken, async (req, res) => {
+  try {
+    const usuario = await Usuario.findById(req.user.id);
+    if (!usuario) return res.status(404).json({ error: 'Usuário não encontrado.' });
+
+    res.json({
+      nome: usuario.nome,
+      email: usuario.email,
+      dataNascimento: usuario.dataNascimento
+    });
+  } catch (err) {
+    console.error('❌ Erro ao buscar perfil:', err);
+    res.status(500).json({ error: 'Erro interno.' });
   }
 });
 
@@ -186,6 +243,28 @@ const produtos = {
   ]
 };
 
+
+// Rota protegida para a página Minha Conta
+app.get('/usuarios/minha-conta', autenticarToken, async (req, res) => {
+    try {
+        const usuario = await Usuario.findById(req.user.id).select('-senha'); // não envia a senha
+        if (!usuario) return res.status(404).json({ error: 'Usuário não encontrado.' });
+
+        res.json({
+            nome: usuario.nome,
+            email: usuario.email,
+            dataNascimento: usuario.dataNascimento,
+            criadoEm: usuario.createdAt,   // data de criação da conta
+            tipo: usuario.tipo || 'usuario', // se for usuário ou motoboy
+            fotoPerfil: usuario.fotoPerfil || null
+        });
+    } catch (err) {
+        console.error('Erro ao buscar conta:', err);
+        res.status(500).json({ error: 'Erro interno.' });
+    }
+});
+
+
 // ==========================
 //  Rotas das Lojas
 // ==========================
@@ -218,7 +297,8 @@ app.get('/lojas/:id/produtos', (req, res) => {
 // Criar nova loja
 app.post('/lojas', (req, res) => {
   const nova = req.body;
-  if (!nova.nome || !nova.categoria) return res.status(400).json({ error: "Nome e categoria são obrigatórios." });
+  if (!nova.nome || !nova.categoria)
+    return res.status(400).json({ error: "Nome e categoria são obrigatórios." });
 
   nova.id = lojas.length ? lojas[lojas.length - 1].id + 1 : 1;
   lojas.push(nova);
