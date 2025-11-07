@@ -108,7 +108,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         const data = await res.json();
 
         if (res.ok && data.fotoPerfil) {
-          // 🔧 Usa a URL completa e força reload com timestamp
           const novaFoto = data.fotoPerfil.startsWith("http")
             ? data.fotoPerfil
             : `http://localhost:3000${data.fotoPerfil}?t=${Date.now()}`;
@@ -122,6 +121,49 @@ window.addEventListener('DOMContentLoaded', async () => {
         console.error('Erro ao enviar imagem:', err);
         alert("❌ Erro ao conectar com o servidor. Verifique se o backend está rodando em http://localhost:3000");
       }
+    });
+  }
+
+  // --- Carregar lojas do usuário ---
+  try {
+    const lojasRes = await fetch('http://localhost:3000/lojas/minhas', {
+      method: 'GET',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    const lojasContainer = document.getElementById('lojasContainer');
+
+    if (!lojasRes.ok) {
+      lojasContainer.innerHTML = `<p class="error-text">❌ Erro ao carregar suas lojas.</p>`;
+      return;
+    }
+
+    const lojas = await lojasRes.json();
+
+    if (lojas.length === 0) {
+      lojasContainer.innerHTML = `<p class="empty-text">Você ainda não possui lojas cadastradas.</p>`;
+    } else {
+      lojasContainer.innerHTML = lojas.map(loja => `
+        <div class="store-card">
+          <img src="http://localhost:3000${loja.logoId ? `/lojas/imagem/${loja.logoId}` : ''}" alt="Logo da loja ${loja.nome}" class="store-logo">
+          <img src="http://localhost:3000${loja.bannerId ? `/lojas/imagem/${loja.bannerId}` : ''}" alt="Banner da loja ${loja.nome}" class="store-banner">
+          <h3>${loja.nome}</h3>
+          <p><strong>Categoria:</strong> ${loja.categoria}</p>
+          <p>${loja.descricao || ''}</p>
+          <p><i class="fa-solid fa-phone"></i> ${loja.telefone || 'Não informado'}</p>
+          <p><i class="fa-solid fa-location-dot"></i> ${loja.endereco || 'Endereço não informado'}</p>
+        </div>
+      `).join('');
+    }
+  } catch (err) {
+    console.error('Erro ao carregar lojas:', err);
+  }
+
+  // --- Botão Cadastrar Nova Loja ---
+  const novaLojaBtn = document.getElementById('novaLojaBtn');
+  if (novaLojaBtn) {
+    novaLojaBtn.addEventListener('click', () => {
+      window.location.href = "cadastroloja.html"; // Redireciona para página de cadastro
     });
   }
 });

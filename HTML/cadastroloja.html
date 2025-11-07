@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar Loja - Conecta Vizinhos</title>
+
+  <link rel="stylesheet" href="../CSS/cadastroloja.css">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+  <!-- Botão de voltar fixo no canto superior esquerdo -->
+  <button class="voltar-btn" onclick="window.location.href='minhaconta.html'">
+    <i class="fa-solid fa-arrow-left"></i>
+  </button>
+
+  <main class="cadastro-container">
+    <div class="cadastro-card">
+
+      <form id="cadastroLojaForm" enctype="multipart/form-data" class="cadastro-form">
+        <!-- Título dentro do formulário, centralizado -->
+        <h2 style="text-align:center; width:100%; margin-bottom: 25px;">
+          <i class="fa-solid fa-store"></i> Cadastrar Nova Loja
+        </h2>
+
+        <div class="form-group">
+          <label for="nome"><i class="fa-solid fa-store"></i> Nome da Loja *</label>
+          <input type="text" id="nome" name="nome" placeholder="Digite o nome da loja" required>
+        </div>
+
+        <div class="form-group">
+          <label for="categoria"><i class="fa-solid fa-tags"></i> Categoria *</label>
+          <input type="text" id="categoria" name="categoria" placeholder="Ex: Padaria, Oficina, Mercado..." required>
+        </div>
+
+        <div class="form-group">
+          <label for="descricao"><i class="fa-solid fa-align-left"></i> Descrição</label>
+          <textarea id="descricao" name="descricao" placeholder="Descreva sua loja, produtos e serviços"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="endereco"><i class="fa-solid fa-location-dot"></i> Endereço</label>
+          <input type="text" id="endereco" name="endereco" placeholder="Digite o endereço da loja">
+        </div>
+
+        <div class="form-group">
+          <label for="telefone"><i class="fa-solid fa-phone"></i> Telefone</label>
+          <input type="text" id="telefone" name="telefone" placeholder="(00) 00000-0000">
+        </div>
+
+        <hr>
+
+        <div class="form-group">
+          <label for="logo"><i class="fa-solid fa-image"></i> Logo da Loja *</label>
+          <input type="file" id="logo" name="logo" accept="image/*" required onchange="previewLogo(event)">
+          <img id="logoPreview" class="image-preview" src="https://placehold.co/120x120?text=Logo" alt="Prévia do logo">
+        </div>
+
+        <div class="form-group">
+          <label for="banner"><i class="fa-solid fa-image"></i> Banner da Loja *</label>
+          <input type="file" id="banner" name="banner" accept="image/*" required onchange="previewBanner(event)">
+          <img id="bannerPreview" class="image-preview" src="https://placehold.co/300x120?text=Banner" alt="Prévia do banner">
+        </div>
+
+        <div class="end-buttons">
+          <button type="submit" class="button-confirm">
+            <i class="fa-solid fa-floppy-disk"></i> Cadastrar Loja
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script src="../JS/cadastro-loja.js"></script>
+</body>
+
+</html>

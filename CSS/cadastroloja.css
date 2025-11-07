@@ -1,0 +1,226 @@
+/* ====== RESET E BASE ====== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", Arial, sans-serif;
+}
+
+body {
+  background: #F8F9FA;
+  color: #264653;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+}
+
+/* ====== CARD PRINCIPAL ====== */
+#cadastroLojaForm {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 480px;
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.5s ease;
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 1;
+  margin: 0 auto; /* centraliza horizontalmente */
+}
+
+/* ====== BOTÃO VOLTAR ====== */
+.voltar-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  color: #264653;
+  font-size: 1.8rem;
+  cursor: pointer;
+  z-index: 2000;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.voltar-btn:hover {
+  transform: scale(1.1);
+  color: #F4A261;
+}
+
+/* ====== TÍTULO DO FORMULÁRIO ====== */
+#cadastroLojaForm h2 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #264653;
+  text-align: center;
+  margin-bottom: 30px;
+  width: 100%;
+  display: block;
+}
+
+/* ====== FORM-GROUP ====== */
+.form-group {
+  width: 100%;
+  margin-bottom: 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ====== LABEL ====== */
+.form-group label {
+  font-size: 1rem;
+  color: #264653;
+  margin-bottom: 8px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ====== CAMPOS DE ENTRADA ====== */
+#nome,
+#categoria,
+#descricao,
+#endereco,
+#telefone,
+#logo,
+#banner {
+  width: 100%;
+  padding: 16px 16px;
+  border: 1.5px solid #ccc;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #264653;
+  background-color: #fff;
+  transition: all 0.25s ease;
+}
+
+#descricao {
+  resize: vertical;
+  min-height: 100px;
+}
+
+#nome:focus,
+#categoria:focus,
+#descricao:focus,
+#endereco:focus,
+#telefone:focus,
+#logo:focus,
+#banner:focus {
+  border-color: #2A9D8F;
+  box-shadow: 0 0 8px rgba(42, 157, 143, 0.4);
+  outline: none;
+}
+
+/* ====== PREVIEW DAS IMAGENS ====== */
+.image-preview {
+  margin-top: 12px;
+  border-radius: 12px;
+  max-width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border: 2px solid #2A9D8F;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.image-preview:hover {
+  transform: scale(1.04);
+  box-shadow: 0 5px 15px rgba(42, 157, 143, 0.4);
+}
+
+/* ====== BOTÕES ====== */
+button {
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+#cadastroLojaForm button[type="submit"] {
+  width: 100%;
+  margin-top: 10px;
+  background-color: #F4A261;
+  color: #fff;
+}
+
+#cadastroLojaForm button[type="submit"]:hover {
+  background-color: #e98b3d;
+}
+
+/* ====== LINK VOLTAR ====== */
+.voltar {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.voltar a {
+  color: #264653;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.25s ease;
+}
+
+.voltar a:hover {
+  color: #F4A261;
+  text-decoration: underline;
+}
+
+/* ====== ANIMAÇÃO ====== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ====== RESPONSIVIDADE ====== */
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+    display: block;
+  }
+
+  #cadastroLojaForm {
+    width: 95%;
+    padding: 30px 20px;
+    margin: 80px auto 0; /* espaço superior maior para seta */
+  }
+
+  #cadastroLojaForm h2 {
+    font-size: 1.6rem;
+    text-align: center;
+  }
+
+  .image-preview {
+    max-height: 120px;
+  }
+
+  /* Reposiciona a seta para mobile para não sobrepor os inputs */
+  .voltar-btn {
+    top: 10px;
+    left: 10px;
+    font-size: 1.5rem;
+    z-index: 3000;
+  }
+}
