@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sobre Nós | Conecta Vizinhos</title>
+  <link rel="stylesheet" href="../CSS/index.css" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Animações e estilo adicional -->
+  <style>
+    .sobre-nos {
+      background: linear-gradient(135deg, #f9fafb, #eef1f6);
+      padding: 80px 20px;
+      text-align: center;
+      margin-top: 100px;
+    }
+
+    .sobre-nos h2 {
+      font-size: 2.5rem;
+      color: #222;
+      margin-bottom: 15px;
+    }
+
+    .sobre-nos p {
+      max-width: 850px;
+      margin: 0 auto 40px auto;
+      font-size: 1.1rem;
+      color: #555;
+      line-height: 1.8;
+    }
+
+    .problema-solucao {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 60px 20px;
+      background: white;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      max-width: 380px;
+      text-align: left;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .card i {
+      font-size: 2.3rem;
+      color: #0078ff;
+      margin-bottom: 15px;
+    }
+
+    .card h3 {
+      color: #222;
+      margin-bottom: 10px;
+      font-size: 1.4rem;
+    }
+
+    .card p {
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .valores {
+      background: linear-gradient(135deg, #0078ff, #00b4d8);
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .valores h2 {
+      font-size: 2.3rem;
+      margin-bottom: 40px;
+    }
+
+    .valores-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+    }
+
+    .valor-item {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 300px;
+      transition: transform 0.3s ease;
+    }
+
+    .valor-item:hover {
+      transform: translateY(-10px);
+    }
+
+    .valor-item i {
+      font-size: 2rem;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .valor-item h4 {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .valor-item p {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+      .problema-solucao {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .card {
+        max-width: 90%;
+      }
+
+      .valores-grid {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <img src="../IMAGENS/logo.png" alt="Logo Conecta Vizinhos">
+      <h1>Conecta Vizinhos</h1>
+    </div>
+    <div class="menu-toggle" id="menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <nav id="nav">
+      <ul>
+        <li><a href="../index.html">Início</a></li>
+        <li><a href="lojas.html">Lojas do seu lado</a></li>
+        <li><a href="sobre.html" class="active">Sobre nós</a></li>
+        <li><a href="suporte.html">Suporte</a></li>
+        <li><a href="minhaconta.html">Minha Conta</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Seção Principal -->
+  <section class="sobre-nos">
+    <h2>Conectando Comunidades, Fortalecendo Negócios</h2>
+    <p>
+      O <strong>Conecta Vizinhos</strong> nasceu com o propósito de aproximar pessoas e fortalecer o comércio local.
+      Nossa plataforma ajuda a conectar <strong>vizinhos, lojistas e empreendedores</strong> da sua região, criando um
+      ecossistema digital onde todos crescem juntos.
+    </p>
+    <p>
+      Aqui, qualquer pessoa pode cadastrar sua loja, produtos ou serviços e ter seu próprio <strong>e-commerce
+        local</strong>, acessível para toda a comunidade — sem precisar investir em tecnologia ou marketing
+      profissional. Nós cuidamos disso por você!
+    </p>
+  </section>
+
+  <!-- Problema e Solução -->
+  <section class="problema-solucao">
+    <div class="card">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <h3>O Problema</h3>
+      <p>
+        Pequenos comércios locais enfrentam dificuldades para se destacar na internet, competir com grandes empresas e
+        alcançar o público certo da região. Muitos negócios incríveis acabam passando despercebidos — mesmo estando
+        bem perto de você.
+      </p>
+    </div>
+
+    <div class="card">
+      <i class="fa-solid fa-lightbulb"></i>
+      <h3>A Solução</h3>
+      <p>
+        O Conecta Vizinhos cria uma ponte entre os moradores e os empreendimentos da vizinhança. Com nossa plataforma,
+        é possível <strong>cadastrar lojas, produtos e serviços</strong> e ser encontrado facilmente por quem está
+        próximo — promovendo economia local, sustentabilidade e conexões reais.
+      </p>
+    </div>
+
+    <div class="card">
+      <i class="fa-solid fa-store"></i>
+      <h3>O Resultado</h3>
+      <p>
+        Negócios ganham mais visibilidade e vendas, enquanto os moradores descobrem novas opções e apoiam o comércio do
+        bairro. Uma comunidade conectada, próspera e colaborativa.
+      </p>
+    </div>
+  </section>
+
+  <!-- Nossos Valores -->
+  <section class="valores">
+    <h2>Nossos Valores</h2>
+    <div class="valores-grid">
+      <div class="valor-item">
+        <i class="fa-solid fa-handshake"></i>
+        <h4>Conexão</h4>
+        <p>União entre pessoas e negócios para criar laços verdadeiros na comunidade.</p>
+      </div>
+
+      <div class="valor-item">
+        <i class="fa-solid fa-seedling"></i>
+        <h4>Crescimento</h4>
+        <p>Incentivamos o desenvolvimento sustentável e o fortalecimento econômico local.</p>
+      </div>
+
+      <div class="valor-item">
+        <i class="fa-solid fa-heart"></i>
+        <h4>Empatia</h4>
+        <p>Valorizamos histórias, pessoas e sonhos que tornam cada bairro único.</p>
+      </div>
+
+      <div class="valor-item">
+        <i class="fa-solid fa-globe"></i>
+        <h4>Inovação</h4>
+        <p>Usamos tecnologia para transformar a forma como a comunidade se conecta.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contato">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h3><i class="fa-solid fa-users"></i> Sobre o Conecta Vizinhos</h3>
+        <p>O Conecta Vizinhos ajuda você a descobrir e apoiar negócios locais, fortalecendo sua comunidade e o comércio
+          do seu bairro.</p>
+      </div>
+
+      <div class="footer-col">
+        <h3><i class="fa-solid fa-link"></i> Links Rápidos</h3>
+        <ul>
+          <li><a href="../index.html"><i class="fa-solid fa-house"></i> Início</a></li>
+          <li><a href="lojas.html"><i class="fa-solid fa-store"></i> Lojas próximas</a></li>
+          <li><a href="sobre.html"><i class="fa-solid fa-circle-info"></i> Sobre nós</a></li>
+          <li><a href="suporte.html"><i class="fa-solid fa-envelope"></i> Suporte</a></li>
+          <li><a href="minhaconta.html"><i class="fa-solid fa-user"></i> Minha Conta</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3><i class="fa-solid fa-share-nodes"></i> Redes Sociais</h3>
+        <div class="social-icons">
+          <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h3><i class="fa-solid fa-phone"></i> Contato</h3>
+        <p><i class="fa-solid fa-envelope"></i> contato@conectavizinhos.com</p>
+        <p><i class="fa-solid fa-phone"></i> (11) 98765-4321</p>
+        <p><i class="fa-solid fa-location-dot"></i> São Paulo - SP</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 - Conecta Vizinhos | Feito com ❤️ para a comunidade | Todos os Direitos Reservados</p>
+    </div>
+  </footer>
+
+  <script src="../JS/index.js"></script>
+</body>
+
+</html>
