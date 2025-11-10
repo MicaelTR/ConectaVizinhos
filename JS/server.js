@@ -147,7 +147,7 @@ app.post('/usuarios/login', async (req, res) => {
   }
 });
 
-// Minha conta (corrigida)
+// Minha conta
 app.get('/usuarios/minha-conta', autenticarToken, async (req, res) => {
   try {
     const usuario = await Usuario.findById(req.user.id).select('-senha');
@@ -182,6 +182,18 @@ app.post('/usuarios/upload-foto', autenticarToken, upload.single('foto'), async 
     if (!req.file)
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
 
+    // --- Deletar foto antiga, se houver ---
+    if (usuario.fotoPerfil) {
+      try {
+        const oldFileId = new mongoose.Types.ObjectId(usuario.fotoPerfil.split('/').pop());
+        gfsBucket.delete(oldFileId, (err) => {
+          if (err) console.error('Erro ao deletar foto antiga:', err);
+        });
+      } catch (err) {
+        console.error('Erro ao processar foto antiga:', err);
+      }
+    }
+
     // Salva referência no usuário (rota relativa)
     usuario.fotoPerfil = `/usuarios/foto/${req.file.id}`;
     await usuario.save();
@@ -200,7 +212,6 @@ app.get('/usuarios/foto/:id', async (req, res) => {
   try {
     const fileId = new mongoose.Types.ObjectId(req.params.id);
 
-    // Verifica se existe e pega contentType
     const filesColl = conn.db.collection('uploads.files');
     const fileDoc = await filesColl.findOne({ _id: fileId });
 
@@ -214,7 +225,6 @@ app.get('/usuarios/foto/:id', async (req, res) => {
     const downloadStream = gfsBucket.openDownloadStream(fileId);
     downloadStream.on('error', (err) => {
       console.error('Erro ao baixar imagem:', err);
-      // só envia JSON se o stream falhar antes de enviar headers
       if (!res.headersSent) res.status(404).json({ error: 'Arquivo não encontrado' });
       else res.end();
     });
@@ -228,7 +238,7 @@ app.get('/usuarios/foto/:id', async (req, res) => {
 });
 
 // ==========================
-// ROTAS DE LOJAS
+// ROTAS DE LOJAS (mantidas iguais)
 // ==========================
 
 // Cadastrar loja

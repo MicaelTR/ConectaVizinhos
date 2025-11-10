@@ -5,14 +5,14 @@
 // --- Preview da imagem selecionada ---
 function previewImage(event) {
   const file = event.target.files[0];
-  if (!file) return; // Evita erro se o usuário cancelar o seletor
+  if (!file) return;
 
   const profileImg = document.getElementById('profileImage');
   const reader = new FileReader();
 
   reader.onload = function () {
     if (profileImg) {
-      profileImg.src = reader.result; // Mostra o preview da imagem selecionada
+      profileImg.src = reader.result;
     }
   };
 
@@ -34,14 +34,12 @@ if (menuToggle && nav) {
 window.addEventListener('DOMContentLoaded', async () => {
   const token = localStorage.getItem('token');
 
-  // Se não estiver logado, redireciona
   if (!token) {
     window.location.href = "login.html";
     return;
   }
 
   try {
-    // Buscar dados do usuário
     const response = await fetch('http://localhost:3000/usuarios/minha-conta', {
       method: 'GET',
       headers: {
@@ -58,7 +56,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     const user = await response.json();
 
-    // --- Exibição da imagem do perfil (corrigido) ---
     const imgPerfil = document.getElementById('profileImage');
     if (imgPerfil) {
       imgPerfil.src = user.fotoPerfil
@@ -66,7 +63,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         : 'https://placehold.co/160x160?text=Perfil';
     }
 
-    // --- Exibe informações do usuário ---
     document.getElementById('nome').textContent = user.nome;
     document.getElementById('email').textContent = user.email;
     document.getElementById('data-nascimento').textContent = new Date(user.dataNascimento).toLocaleDateString('pt-BR');
@@ -110,7 +106,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         const data = await res.json();
 
         if (res.ok && data.fotoPerfil) {
-          // Atualiza a imagem no DOM com cache-buster
           document.getElementById('profileImage').src = `${data.fotoPerfil}?t=${Date.now()}`;
           alert("✅ Foto de perfil atualizada com sucesso!");
         } else {
@@ -162,7 +157,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const novaLojaBtn = document.getElementById('novaLojaBtn');
   if (novaLojaBtn) {
     novaLojaBtn.addEventListener('click', () => {
-      window.location.href = "cadastroloja.html"; // Redireciona para página de cadastro
+      window.location.href = "cadastroloja.html";
     });
   }
 });

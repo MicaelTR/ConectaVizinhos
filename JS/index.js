@@ -51,21 +51,6 @@ function checkLogin() {
         msg.style.fontWeight = '700';
         hero.appendChild(msg);
 
-        // Cria botão de logout estilizado
-        const logoutBtn = document.createElement('button');
-        logoutBtn.id = 'btnLogout';
-        logoutBtn.textContent = 'Sair';
-        logoutBtn.className = 'btn-logout primary'; // mesma classe dos outros botões hero
-        logoutBtn.style.marginTop = '15px';
-        logoutBtn.style.padding = '10px 25px';
-        logoutBtn.style.fontSize = '1rem';
-        logoutBtn.style.cursor = 'pointer';
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('nome');
-            location.reload();
-        });
-        hero.appendChild(logoutBtn);
 
     } else {
         // Não logado: mostra botões de login/cadastro
