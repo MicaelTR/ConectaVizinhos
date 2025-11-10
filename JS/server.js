@@ -84,7 +84,7 @@ app.post('/usuarios/cadastro', async (req, res) => {
       return res.status(400).json({ error: 'Preencha todos os campos obrigatórios' });
 
     // Corrige formato da data se vier como DD/MM/YYYY
-    if (dataNascimento.includes('/')) {
+    if (typeof dataNascimento === 'string' && dataNascimento.includes('/')) {
       const [dia, mes, ano] = dataNascimento.split('/');
       dataNascimento = `${ano}-${mes}-${dia}`;
     }
@@ -147,12 +147,26 @@ app.post('/usuarios/login', async (req, res) => {
   }
 });
 
-// Minha conta
+// Minha conta (corrigida)
 app.get('/usuarios/minha-conta', autenticarToken, async (req, res) => {
   try {
     const usuario = await Usuario.findById(req.user.id).select('-senha');
     if (!usuario) return res.status(404).json({ error: 'Usuário não encontrado' });
-    res.json(usuario);
+
+    // Garante que o campo fotoPerfil venha com URL completa
+    let fotoPerfilUrl = null;
+    if (usuario.fotoPerfil) {
+      if (usuario.fotoPerfil.startsWith('http')) {
+        fotoPerfilUrl = usuario.fotoPerfil;
+      } else {
+        fotoPerfilUrl = `${req.protocol}://${req.get('host')}${usuario.fotoPerfil}`;
+      }
+    }
+
+    res.json({
+      ...usuario.toObject(),
+      fotoPerfil: fotoPerfilUrl
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao buscar conta' });
@@ -168,26 +182,48 @@ app.post('/usuarios/upload-foto', autenticarToken, upload.single('foto'), async 
     if (!req.file)
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
 
+    // Salva referência no usuário (rota relativa)
     usuario.fotoPerfil = `/usuarios/foto/${req.file.id}`;
     await usuario.save();
 
-    res.json({ message: 'Foto de perfil atualizada', fotoPerfil: usuario.fotoPerfil });
+    // Retorna a URL completa (usável pelo frontend imediatamente)
+    const fullUrl = `${req.protocol}://${req.get('host')}/usuarios/foto/${req.file.id}`;
+    res.json({ message: 'Foto de perfil atualizada', fotoPerfil: fullUrl });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao salvar foto' });
   }
 });
 
-// Rota para servir imagem do GridFS
+// Rota para servir imagem do GridFS (usuário)
 app.get('/usuarios/foto/:id', async (req, res) => {
   try {
     const fileId = new mongoose.Types.ObjectId(req.params.id);
+
+    // Verifica se existe e pega contentType
+    const filesColl = conn.db.collection('uploads.files');
+    const fileDoc = await filesColl.findOne({ _id: fileId });
+
+    if (!fileDoc) {
+      return res.status(404).json({ error: 'Arquivo não encontrado' });
+    }
+
+    const contentType = fileDoc.contentType || 'application/octet-stream';
+    res.set('Content-Type', contentType);
+
     const downloadStream = gfsBucket.openDownloadStream(fileId);
-    downloadStream.on('error', () => res.status(404).json({ error: 'Arquivo não encontrado' }));
+    downloadStream.on('error', (err) => {
+      console.error('Erro ao baixar imagem:', err);
+      // só envia JSON se o stream falhar antes de enviar headers
+      if (!res.headersSent) res.status(404).json({ error: 'Arquivo não encontrado' });
+      else res.end();
+    });
+
     downloadStream.pipe(res);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Erro ao buscar imagem' });
+    if (!res.headersSent) res.status(500).json({ error: 'Erro ao buscar imagem' });
+    else res.end();
   }
 });
 
@@ -271,16 +307,33 @@ app.get('/lojas/:id', async (req, res) => {
   }
 });
 
-// Servir imagem da loja
+// Servir imagem da loja (logo/banner)
 app.get('/lojas/imagem/:id', async (req, res) => {
   try {
     const fileId = new mongoose.Types.ObjectId(req.params.id);
+
+    const filesColl = conn.db.collection('uploads.files');
+    const fileDoc = await filesColl.findOne({ _id: fileId });
+
+    if (!fileDoc) {
+      return res.status(404).json({ error: 'Arquivo não encontrado' });
+    }
+
+    const contentType = fileDoc.contentType || 'application/octet-stream';
+    res.set('Content-Type', contentType);
+
     const downloadStream = gfsBucket.openDownloadStream(fileId);
-    downloadStream.on('error', () => res.status(404).json({ error: 'Arquivo não encontrado' }));
+    downloadStream.on('error', (err) => {
+      console.error('Erro ao baixar imagem:', err);
+      if (!res.headersSent) res.status(404).json({ error: 'Arquivo não encontrado' });
+      else res.end();
+    });
+
     downloadStream.pipe(res);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Erro ao buscar imagem' });
+    if (!res.headersSent) res.status(500).json({ error: 'Erro ao buscar imagem' });
+    else res.end();
   }
 });
 

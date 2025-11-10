@@ -260,7 +260,6 @@ nav a:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-
 /* ====== MAPA ====== */
 #map {
   height: 300px;
@@ -452,18 +451,18 @@ footer {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 40px;
   text-align: left;
 }
 
 .footer-col h3 {
   color: #F4A261;
-  font-size: 1.2rem;
-  margin-bottom: 15px;
+  font-size: 1.25rem;
+  margin-bottom: 18px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .footer-col p {
@@ -478,7 +477,7 @@ footer {
 }
 
 .footer-col ul li {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .footer-col ul li a {
@@ -499,8 +498,8 @@ footer {
 /* ====== ÍCONES DE REDES SOCIAIS ====== */
 .social-icons {
   display: flex;
-  gap: 10px;
-  margin-top: 5px;
+  gap: 12px;
+  margin-top: 8px;
   flex-wrap: wrap;
 }
 
@@ -508,12 +507,12 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 50%;
   color: #fff;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   transition: 0.3s;
 }
 
@@ -526,9 +525,9 @@ footer {
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   text-align: center;
-  padding-top: 12px;
-  margin-top: 30px;
-  font-size: 0.85rem;
+  padding-top: 14px;
+  margin-top: 35px;
+  font-size: 0.88rem;
   color: #ddd;
 }
 
@@ -542,25 +541,6 @@ footer {
   .footer-col p,
   .footer-col ul li a {
     font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 500px) {
-  .footer-container {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .footer-col h3 {
-    justify-content: center;
-  }
-
-  .footer-col ul li a {
-    justify-content: center;
-  }
-
-  .social-icons {
-    justify-content: center;
   }
 }
 
@@ -588,16 +568,13 @@ footer {
   display: flex;
 }
 
-
-
-
 /* ====== HERO LOJAS ====== */
 .hero {
-  background: none; /* Remove o fundo azul */
-  padding: 100px 20px 40px; /* Ajusta espaço superior e inferior */
+  background: none;
+  padding: 100px 20px 40px;
   text-align: center;
   color: #264653;
-  margin-top: 70px; /* Para compensar header fixo */
+  margin-top: 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -646,58 +623,42 @@ footer {
   opacity: 1;
 }
 
-/* ====== RESPONSIVIDADE PARA FILTROS (Ajustada) ====== */
+/* ====== RESPONSIVIDADE PARA FILTROS ====== */
 @media (max-width: 600px) {
   .filters {
     display: flex;
-    flex-direction: column; /* empilha verticalmente */
-    gap: 16px; /* aumenta o espaçamento entre os filtros */
-    align-items: stretch; /* cada filtro ocupa 100% da largura */
-    padding: 15px; /* aumenta o espaço interno */
-    background-color: #fff; /* opcional: destaque do container */
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+    padding: 15px;
+    background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 3px 12px rgba(0,0,0,0.1);
   }
 
   .filters label {
     display: flex;
-    flex-direction: column; /* texto acima do select */
+    flex-direction: column;
     width: 100%;
     font-weight: 500;
-    font-size: 1rem; /* aumenta levemente a fonte */
+    font-size: 1rem;
     color: #264653;
   }
 
   .filters select {
     width: 100%;
-    padding: 12px 14px; /* aumenta o tamanho clicável */
-    margin-top: 6px; /* mais espaço entre label e select */
+    padding: 12px 14px;
+    margin-top: 6px;
     border-radius: 10px;
     border: 1px solid #ccc;
-    box-sizing: border-box;
-    font-size: 1rem; /* fonte maior para melhor leitura */
+    font-size: 1rem;
   }
 
   .filters button {
     width: 100%;
-    padding: 14px 0; /* botão maior para toque */
+    padding: 14px 0;
     border-radius: 10px;
     font-size: 1.05rem;
     font-weight: 600;
-  }
-}
-
-/* ====== RESPONSIVIDADE PARA A DIV DE FILTROS ====== */
-@media (max-width: 600px) {
-  .filters {
-    display: flex;
-    flex-direction: column; /* empilha verticalmente */
-    gap: 20px; /* espaço maior entre filtros */
-    padding: 25px; /* aumenta o tamanho interno da div */
-    background-color: #fff;
-    border-radius: 14px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    width: 95%; /* ocupa quase toda a tela */
-    margin: 0 auto 20px auto; /* centraliza e dá margem inferior */
   }
 }

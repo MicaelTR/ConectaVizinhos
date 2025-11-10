@@ -174,9 +174,6 @@ main {
     margin-bottom: 25px;
     transition: all 0.3s ease;
     cursor: pointer;
-}
-
-.profile-pic:hover {
     transform: scale(1.05);
 }
 
@@ -405,6 +402,7 @@ main {
     .profile-pic {
         width: 130px;
         height: 130px;
+        margin-left: 46px;
     }
 
     .account-info div {

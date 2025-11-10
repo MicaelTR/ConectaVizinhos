@@ -58,11 +58,15 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     const user = await response.json();
 
-    // Preenche os dados do usuário
-    document.getElementById('profileImage').src = user.fotoPerfil
-      ? `http://localhost:3000${user.fotoPerfil}`
-      : 'https://placehold.co/160x160?text=Perfil';
+    // --- Exibição da imagem do perfil (corrigido) ---
+    const imgPerfil = document.getElementById('profileImage');
+    if (imgPerfil) {
+      imgPerfil.src = user.fotoPerfil
+        ? user.fotoPerfil
+        : 'https://placehold.co/160x160?text=Perfil';
+    }
 
+    // --- Exibe informações do usuário ---
     document.getElementById('nome').textContent = user.nome;
     document.getElementById('email').textContent = user.email;
     document.getElementById('data-nascimento').textContent = new Date(user.dataNascimento).toLocaleDateString('pt-BR');
@@ -99,20 +103,15 @@ window.addEventListener('DOMContentLoaded', async () => {
       try {
         const res = await fetch('http://localhost:3000/usuarios/upload-foto', {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+          headers: { 'Authorization': `Bearer ${token}` },
           body: formData
         });
 
         const data = await res.json();
 
         if (res.ok && data.fotoPerfil) {
-          const novaFoto = data.fotoPerfil.startsWith("http")
-            ? data.fotoPerfil
-            : `http://localhost:3000${data.fotoPerfil}?t=${Date.now()}`;
-
-          document.getElementById('profileImage').src = novaFoto;
+          // Atualiza a imagem no DOM com cache-buster
+          document.getElementById('profileImage').src = `${data.fotoPerfil}?t=${Date.now()}`;
           alert("✅ Foto de perfil atualizada com sucesso!");
         } else {
           alert("❌ Erro ao salvar foto: " + (data.error || 'Erro desconhecido.'));
@@ -145,8 +144,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     } else {
       lojasContainer.innerHTML = lojas.map(loja => `
         <div class="store-card">
-          <img src="http://localhost:3000${loja.logoId ? `/lojas/imagem/${loja.logoId}` : ''}" alt="Logo da loja ${loja.nome}" class="store-logo">
-          <img src="http://localhost:3000${loja.bannerId ? `/lojas/imagem/${loja.bannerId}` : ''}" alt="Banner da loja ${loja.nome}" class="store-banner">
+          <img src="${loja.logoId ? `http://localhost:3000/lojas/imagem/${loja.logoId}` : 'https://placehold.co/120x120?text=Logo'}" alt="Logo da loja ${loja.nome}" class="store-logo">
+          <img src="${loja.bannerId ? `http://localhost:3000/lojas/imagem/${loja.bannerId}` : 'https://placehold.co/300x120?text=Banner'}" alt="Banner da loja ${loja.nome}" class="store-banner">
           <h3>${loja.nome}</h3>
           <p><strong>Categoria:</strong> ${loja.categoria}</p>
           <p>${loja.descricao || ''}</p>

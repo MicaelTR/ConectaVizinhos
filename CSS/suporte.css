@@ -396,3 +396,16 @@
                 justify-content: center;
             }
         }
+
+        /* ====== RESPONSIVIDADE RODAPÉ ====== */
+        @media (max-width: 768px) {
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+
+            .footer-col p,
+            .footer-col ul li a {
+                font-size: 0.9rem;
+            }
+        }
