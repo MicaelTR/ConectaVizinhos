@@ -591,3 +591,57 @@ footer {
         width: 100%;
     }
 }
+
+/* ====== CAMPO URL DA FOTO DE PERFIL ====== */
+.profile-url-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.profile-url-container label {
+    font-weight: 600;
+    color: #264653;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.profile-url-container input[type="url"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #2a2a2a;
+    background-color: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-url-container input[type="url"]:focus {
+    border-color: #6EC1E4;
+    box-shadow: 0 0 4px rgba(110, 193, 228, 0.6);
+    outline: none;
+}
+
+/* Botão de salvar abaixo do campo */
+.save-photo-btn {
+    margin-top: 10px;
+    background-color: #6EC1E4;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.save-photo-btn:hover {
+    background-color: #57b0da;
+}

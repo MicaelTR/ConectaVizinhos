@@ -7,6 +7,8 @@ const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const crypto = require('crypto');
 const path = require('path');
+const fetch = require('node-fetch'); // ✅ Adicionado para baixar imagens da URL
+const { Readable } = require('stream');
 
 const Usuario = require('./models/Usuario');
 const Loja = require('./models/Loja');
@@ -39,6 +41,10 @@ conn.once('open', () => {
   console.log('✅ Conectado ao MongoDB + GridFS pronto');
 });
 
+conn.on('error', (err) => {
+  console.error('Erro na conexão com MongoDB:', err);
+});
+
 // ==========================
 // Configuração do Multer + GridFSStorage
 // ==========================
@@ -64,7 +70,8 @@ function autenticarToken(req, res, next) {
   const token = authHeader && authHeader.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'Token ausente' });
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  const secret = process.env.JWT_SECRET || 'chave_temporaria';
+  jwt.verify(token, secret, (err, user) => {
     if (err) return res.status(403).json({ error: 'Token inválido ou expirado' });
     req.user = user;
     next();
@@ -83,7 +90,6 @@ app.post('/usuarios/cadastro', async (req, res) => {
     if (!nome || !dataNascimento || !email || !senha)
       return res.status(400).json({ error: 'Preencha todos os campos obrigatórios' });
 
-    // Corrige formato da data se vier como DD/MM/YYYY
     if (typeof dataNascimento === 'string' && dataNascimento.includes('/')) {
       const [dia, mes, ano] = dataNascimento.split('/');
       dataNascimento = `${ano}-${mes}-${dia}`;
@@ -126,9 +132,10 @@ app.post('/usuarios/login', async (req, res) => {
     if (!senhaCorreta)
       return res.status(401).json({ error: 'Senha incorreta' });
 
+    const secret = process.env.JWT_SECRET || 'chave_temporaria';
     const token = jwt.sign(
       { id: usuario._id, nome: usuario.nome, email: usuario.email },
-      process.env.JWT_SECRET,
+      secret,
       { expiresIn: '1d' }
     );
 
@@ -153,7 +160,6 @@ app.get('/usuarios/minha-conta', autenticarToken, async (req, res) => {
     const usuario = await Usuario.findById(req.user.id).select('-senha');
     if (!usuario) return res.status(404).json({ error: 'Usuário não encontrado' });
 
-    // Garante que o campo fotoPerfil venha com URL completa
     let fotoPerfilUrl = null;
     if (usuario.fotoPerfil) {
       if (usuario.fotoPerfil.startsWith('http')) {
@@ -173,7 +179,7 @@ app.get('/usuarios/minha-conta', autenticarToken, async (req, res) => {
   }
 });
 
-// Upload de foto de perfil
+// Upload de foto de perfil (arquivo)
 app.post('/usuarios/upload-foto', autenticarToken, upload.single('foto'), async (req, res) => {
   try {
     const usuario = await Usuario.findById(req.user.id);
@@ -182,8 +188,7 @@ app.post('/usuarios/upload-foto', autenticarToken, upload.single('foto'), async 
     if (!req.file)
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
 
-    // --- Deletar foto antiga, se houver ---
-    if (usuario.fotoPerfil) {
+    if (usuario.fotoPerfil && usuario.fotoPerfil.includes('/usuarios/foto/')) {
       try {
         const oldFileId = new mongoose.Types.ObjectId(usuario.fotoPerfil.split('/').pop());
         gfsBucket.delete(oldFileId, (err) => {
@@ -194,11 +199,9 @@ app.post('/usuarios/upload-foto', autenticarToken, upload.single('foto'), async 
       }
     }
 
-    // Salva referência no usuário (rota relativa)
     usuario.fotoPerfil = `/usuarios/foto/${req.file.id}`;
     await usuario.save();
 
-    // Retorna a URL completa (usável pelo frontend imediatamente)
     const fullUrl = `${req.protocol}://${req.get('host')}/usuarios/foto/${req.file.id}`;
     res.json({ message: 'Foto de perfil atualizada', fotoPerfil: fullUrl });
   } catch (err) {
@@ -207,11 +210,10 @@ app.post('/usuarios/upload-foto', autenticarToken, upload.single('foto'), async 
   }
 });
 
-// Rota para servir imagem do GridFS (usuário)
+// Servir imagem do GridFS
 app.get('/usuarios/foto/:id', async (req, res) => {
   try {
     const fileId = new mongoose.Types.ObjectId(req.params.id);
-
     const filesColl = conn.db.collection('uploads.files');
     const fileDoc = await filesColl.findOne({ _id: fileId });
 
@@ -238,10 +240,64 @@ app.get('/usuarios/foto/:id', async (req, res) => {
 });
 
 // ==========================
-// ROTAS DE LOJAS (mantidas iguais)
+// NOVA ROTA - Atualizar foto via URL (com salvamento real no Mongo)
 // ==========================
+app.put('/usuarios/foto-url', autenticarToken, async (req, res) => {
+  try {
+    const { fotoUrl } = req.body;
+    if (!fotoUrl) return res.status(400).json({ error: 'A URL da imagem é obrigatória' });
 
-// Cadastrar loja
+    // Baixa a imagem
+    const response = await fetch(fotoUrl);
+    if (!response.ok) return res.status(400).json({ error: 'Falha ao acessar a imagem da URL' });
+
+    const contentType = response.headers.get('content-type') || 'image/jpeg';
+    const buffer = await response.arrayBuffer();
+
+    const usuario = await Usuario.findById(req.user.id);
+    if (!usuario) return res.status(404).json({ error: 'Usuário não encontrado' });
+
+    // Remove imagem anterior (se era do GridFS)
+    if (usuario.fotoPerfil && usuario.fotoPerfil.includes('/usuarios/foto/')) {
+      try {
+        const oldFileId = new mongoose.Types.ObjectId(usuario.fotoPerfil.split('/').pop());
+        gfsBucket.delete(oldFileId, (err) => {
+          if (err) console.error('Erro ao deletar imagem antiga:', err);
+        });
+      } catch (err) {
+        console.error('Erro ao processar imagem antiga:', err);
+      }
+    }
+
+    // Salva nova imagem no GridFS
+    const filename = crypto.randomBytes(16).toString('hex') + '.jpg';
+    const uploadStream = gfsBucket.openUploadStream(filename, { contentType });
+    Readable.from(Buffer.from(buffer)).pipe(uploadStream);
+
+    uploadStream.on('error', (err) => {
+      console.error('Erro ao salvar imagem:', err);
+      res.status(500).json({ error: 'Erro ao salvar imagem no servidor' });
+    });
+
+    uploadStream.on('finish', async (file) => {
+      usuario.fotoPerfil = `/usuarios/foto/${file._id}`;
+      await usuario.save();
+
+      const fullUrl = `${req.protocol}://${req.get('host')}/usuarios/foto/${file._id}`;
+      res.json({
+        message: '✅ Foto atualizada com sucesso via URL!',
+        fotoPerfil: fullUrl,
+      });
+    });
+  } catch (err) {
+    console.error('Erro ao atualizar foto via URL:', err);
+    res.status(500).json({ error: 'Erro ao atualizar foto via URL' });
+  }
+});
+
+// ==========================
+// ROTAS DE LOJAS (originais)
+// ==========================
 app.post(
   '/lojas/cadastrar',
   autenticarToken,
@@ -278,7 +334,6 @@ app.post(
   }
 );
 
-// Minhas lojas
 app.get('/lojas/minhas', autenticarToken, async (req, res) => {
   try {
     const lojas = await Loja.find({ dono: req.user.id });
@@ -289,7 +344,6 @@ app.get('/lojas/minhas', autenticarToken, async (req, res) => {
   }
 });
 
-// Listar todas as lojas (públicas)
 app.get('/lojas', async (req, res) => {
   try {
     const { categoria, nome } = req.query;
@@ -305,7 +359,6 @@ app.get('/lojas', async (req, res) => {
   }
 });
 
-// Buscar loja por ID
 app.get('/lojas/:id', async (req, res) => {
   try {
     const loja = await Loja.findById(req.params.id).populate('dono', 'nome email');
@@ -317,11 +370,9 @@ app.get('/lojas/:id', async (req, res) => {
   }
 });
 
-// Servir imagem da loja (logo/banner)
 app.get('/lojas/imagem/:id', async (req, res) => {
   try {
     const fileId = new mongoose.Types.ObjectId(req.params.id);
-
     const filesColl = conn.db.collection('uploads.files');
     const fileDoc = await filesColl.findOne({ _id: fileId });
 

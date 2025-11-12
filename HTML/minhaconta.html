@@ -43,15 +43,14 @@
     <div class="account-card">
       <!-- Foto de perfil -->
       <div class="profile-section">
-        <img class="profile-pic" id="profileImage" src="https://via.placeholder.com/160" alt="Foto de Perfil">
+        <img class="profile-pic" id="profileImage" src="../IMAGENS/avatar.png" alt="Foto de Perfil">
+        <!-- 🟢 NOVA SEÇÃO: inserir URL da imagem -->
         <form id="uploadForm" class="upload-form">
-          <input type="file" id="fotoInput" accept="image/*" style="display:none" onchange="previewImage(event)">
+          <input type="url" id="fotoUrlInput" placeholder="Cole aqui a URL da imagem" required
+            style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc;">
           <div class="upload-buttons">
-            <button type="button" class="btn" onclick="document.getElementById('fotoInput').click()">
-              <i class="fa-solid fa-camera"></i> Escolher Foto
-            </button>
             <button type="submit" class="btn save-btn">
-              <i class="fa-solid fa-floppy-disk"></i> Salvar Foto
+              <i class="fa-solid fa-floppy-disk"></i> Salvar Imagem
             </button>
           </div>
         </form>
@@ -109,8 +108,8 @@
     <div class="footer-container">
       <div class="footer-col">
         <h3><i class="fa-solid fa-users"></i> Sobre o Conecta Vizinhos</h3>
-        <p>O Conecta Vizinhos ajuda você a descobrir e apoiar negócios locais, fortalecendo sua comunidade e o
-          comércio do seu bairro.</p>
+        <p>O Conecta Vizinhos ajuda você a descobrir e apoiar negócios locais, fortalecendo sua comunidade e o comércio
+          do seu bairro.</p>
       </div>
 
       <div class="footer-col">

@@ -2,23 +2,6 @@
 // Conecta Vizinhos - Minha Conta
 // ===============================
 
-// --- Preview da imagem selecionada ---
-function previewImage(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const profileImg = document.getElementById('profileImage');
-  const reader = new FileReader();
-
-  reader.onload = function () {
-    if (profileImg) {
-      profileImg.src = reader.result;
-    }
-  };
-
-  reader.readAsDataURL(file);
-}
-
 // --- Menu responsivo ---
 const menuToggle = document.getElementById('menu-toggle');
 const nav = document.getElementById('nav');
@@ -40,6 +23,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   try {
+    // --- Busca dados do usuário ---
     const response = await fetch('http://localhost:3000/usuarios/minha-conta', {
       method: 'GET',
       headers: {
@@ -56,13 +40,19 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     const user = await response.json();
 
+    // --- Exibe imagem de perfil corretamente ---
     const imgPerfil = document.getElementById('profileImage');
     if (imgPerfil) {
-      imgPerfil.src = user.fotoPerfil
-        ? user.fotoPerfil
-        : 'https://placehold.co/160x160?text=Perfil';
+      // Se o usuário tiver uma imagem salva, mostra ela.
+      // Só mostra o placeholder se NÃO houver nenhuma imagem definida.
+      if (user.fotoPerfil && user.fotoPerfil.trim() !== '') {
+        imgPerfil.src = user.fotoPerfil;
+      } else {
+        imgPerfil.src = '../IMAGENS/avatar.png';
+      }
     }
 
+    // --- Exibe os dados ---
     document.getElementById('nome').textContent = user.nome;
     document.getElementById('email').textContent = user.email;
     document.getElementById('data-nascimento').textContent = new Date(user.dataNascimento).toLocaleDateString('pt-BR');
@@ -84,36 +74,47 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // --- Upload da imagem de perfil ---
-  const imageInput = document.getElementById('imageInput');
-  const saveBtn = document.querySelector('.save-btn');
+  // --- Salvar imagem via URL (sem recarregar a página) ---
+  const imageUrlInput = document.getElementById('imageUrlInput');
+  const form = document.getElementById('uploadForm'); // formulário da URL
 
-  if (saveBtn && imageInput) {
-    saveBtn.addEventListener('click', async () => {
-      const foto = imageInput.files[0];
-      if (!foto) return alert("📷 Selecione uma imagem primeiro.");
+  if (form && imageUrlInput) {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault(); // impede o reload da página
 
-      const formData = new FormData();
-      formData.append('foto', foto);
+      const url = imageUrlInput.value.trim();
+      if (!url) return alert("📸 Cole o link (URL) da imagem antes de salvar.");
+
+      // Validação básica de URL
+      try {
+        new URL(url);
+      } catch {
+        return alert("❌ O link inserido não é uma URL válida!");
+      }
 
       try {
-        const res = await fetch('http://localhost:3000/usuarios/upload-foto', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` },
-          body: formData
+        const res = await fetch('http://localhost:3000/usuarios/foto', {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ fotoPerfil: url })
         });
 
         const data = await res.json();
 
         if (res.ok && data.fotoPerfil) {
-          document.getElementById('profileImage').src = `${data.fotoPerfil}?t=${Date.now()}`;
+          // Atualiza a imagem de perfil imediatamente
+          const imgPerfil = document.getElementById('profileImage');
+          imgPerfil.src = `${data.fotoPerfil}?t=${Date.now()}`; // força recarregar
           alert("✅ Foto de perfil atualizada com sucesso!");
         } else {
-          alert("❌ Erro ao salvar foto: " + (data.error || 'Erro desconhecido.'));
+          alert("❌ Erro ao salvar: " + (data.error || 'Erro desconhecido.'));
         }
       } catch (err) {
-        console.error('Erro ao enviar imagem:', err);
-        alert("❌ Erro ao conectar com o servidor. Verifique se o backend está rodando em http://localhost:3000");
+        console.error('Erro ao salvar imagem via URL:', err);
+        alert("❌ Falha ao conectar com o servidor.");
       }
     });
   }
