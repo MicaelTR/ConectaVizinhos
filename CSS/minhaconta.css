@@ -175,6 +175,7 @@ main {
     transition: all 0.3s ease;
     cursor: pointer;
     transform: scale(1.05);
+    margin-left: 10px;
 }
 
 /* ====== INFORMAÇÕES DA CONTA ====== */
@@ -229,6 +230,76 @@ main {
     padding-left: 2px;
     word-break: break-word;
 }
+
+/* ====== UPLOAD DE FOTO DE PERFIL (BOTÃO ESTILIZADO) ====== */
+.upload-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* Esconde o input original */
+.upload-form input[type="file"] {
+  display: none;
+}
+
+/* Label estilizado como botão */
+.custom-file-label {
+  background-color: #F4A261;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.custom-file-label:hover {
+  background-color: #e98b3d;
+  transform: translateY(-1px);
+}
+
+/* Botão de envio */
+.upload-buttons .save-btn {
+  background-color: #2A9D8F;
+  color: white;
+  border-radius: 10px;
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.upload-buttons .save-btn:hover {
+  background-color: #21867a;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .custom-file-label {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+
+  .upload-buttons .save-btn {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+}
+
+
 
 /* ====== BOTÕES ====== */
 .btn {
@@ -402,7 +473,7 @@ main {
     .profile-pic {
         width: 130px;
         height: 130px;
-        margin-left: 46px;
+        margin-left: 36px;
     }
 
     .account-info div {

@@ -43,19 +43,19 @@ window.addEventListener('DOMContentLoaded', async () => {
     // --- Exibe imagem de perfil corretamente ---
     const imgPerfil = document.getElementById('profileImage');
     if (imgPerfil) {
-      // Se o usuário tiver uma imagem salva, mostra ela.
-      // Só mostra o placeholder se NÃO houver nenhuma imagem definida.
       if (user.fotoPerfil && user.fotoPerfil.trim() !== '') {
-        imgPerfil.src = user.fotoPerfil;
+        imgPerfil.src = user.fotoPerfil; // vem direto do backend (GridFS)
       } else {
         imgPerfil.src = '../IMAGENS/avatar.png';
       }
     }
 
-    // --- Exibe os dados ---
-    document.getElementById('nome').textContent = user.nome;
-    document.getElementById('email').textContent = user.email;
-    document.getElementById('data-nascimento').textContent = new Date(user.dataNascimento).toLocaleDateString('pt-BR');
+    // --- Exibe os dados do usuário ---
+    document.getElementById('nome').textContent = user.nome || "Não informado";
+    document.getElementById('email').textContent = user.email || "Não informado";
+    document.getElementById('data-nascimento').textContent = user.dataNascimento
+      ? new Date(user.dataNascimento).toLocaleDateString('pt-BR')
+      : "Não informada";
     document.getElementById('criado-em').textContent = new Date(user.criadoEm || user.createdAt).toLocaleDateString('pt-BR');
     document.getElementById('tipo-usuario').textContent = user.tipo || "Comum";
 
@@ -74,46 +74,56 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // --- Salvar imagem via URL (sem recarregar a página) ---
-  const imageUrlInput = document.getElementById('imageUrlInput');
-  const form = document.getElementById('uploadForm'); // formulário da URL
+  // --- Upload de imagem de perfil via ARQUIVO ---
+  const fileInput = document.getElementById('fileInput');
+  const fileForm = document.getElementById('fileForm'); // formulário de upload
+  const imgPerfil = document.getElementById('profileImage');
 
-  if (form && imageUrlInput) {
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault(); // impede o reload da página
+  if (fileInput) {
+    // 🔥 PRÉ-VISUALIZAÇÃO DA IMAGEM ANTES DO ENVIO
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          imgPerfil.src = e.target.result; // Atualiza a imagem de perfil com a escolhida
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
 
-      const url = imageUrlInput.value.trim();
-      if (!url) return alert("📸 Cole o link (URL) da imagem antes de salvar.");
+  if (fileForm && fileInput) {
+    fileForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
 
-      // Validação básica de URL
-      try {
-        new URL(url);
-      } catch {
-        return alert("❌ O link inserido não é uma URL válida!");
+      const file = fileInput.files[0];
+      if (!file) {
+        alert("📷 Escolha uma imagem antes de enviar.");
+        return;
       }
 
+      const formData = new FormData();
+      formData.append('foto', file);
+
       try {
-        const res = await fetch('http://localhost:3000/usuarios/foto', {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ fotoPerfil: url })
+        const res = await fetch('http://localhost:3000/usuarios/upload-foto', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }, // não define Content-Type manualmente
+          body: formData
         });
 
         const data = await res.json();
 
         if (res.ok && data.fotoPerfil) {
-          // Atualiza a imagem de perfil imediatamente
-          const imgPerfil = document.getElementById('profileImage');
-          imgPerfil.src = `${data.fotoPerfil}?t=${Date.now()}`; // força recarregar
-          alert("✅ Foto de perfil atualizada com sucesso!");
+          // Atualiza a imagem definitiva com a nova URL vinda do servidor
+          imgPerfil.src = `${data.fotoPerfil}?t=${Date.now()}`; // força o navegador a recarregar
+          alert("✅ Foto de perfil enviada com sucesso!");
         } else {
           alert("❌ Erro ao salvar: " + (data.error || 'Erro desconhecido.'));
         }
       } catch (err) {
-        console.error('Erro ao salvar imagem via URL:', err);
+        console.error('Erro ao enviar foto:', err);
         alert("❌ Falha ao conectar com o servidor.");
       }
     });

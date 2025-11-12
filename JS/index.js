@@ -7,14 +7,16 @@ menuToggle.addEventListener('click', () => {
     menuToggle.classList.toggle('active');
 });
 
-// Inicializa o mapa, mas deixa invisível
-const map = L.map('map').setView([-23.55, -46.63], 13);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; OpenStreetMap'
-}).addTo(map);
+// 🔧 O mapa não é inicializado agora — apenas a div fica invisível
 mapDiv.style.display = "none";
+let map = null;
+let userMarker = null;
 
+// 🔧 Guardar marcadores e cache
+let storeMarkers = [];
+let lojasCache = [];
+
+// Botões e elementos
 const btn = document.getElementById('btnLocate');
 const list = document.getElementById('storeList');
 const storeSectionTitle = document.getElementById('storeSectionTitle');
@@ -28,7 +30,7 @@ const btnLogin = document.querySelector('.btn-login');
 // ================================
 function checkLogin() {
     const token = localStorage.getItem('token');
-    const nome = localStorage.getItem('nome'); 
+    const nome = localStorage.getItem('nome');
 
     const hero = document.querySelector('.hero');
     // Remove mensagens ou botões anteriores
@@ -51,14 +53,12 @@ function checkLogin() {
         msg.style.fontWeight = '700';
         hero.appendChild(msg);
 
-
     } else {
         // Não logado: mostra botões de login/cadastro
         if (btnRegister) btnRegister.style.display = 'inline-block';
         if (btnLogin) btnLogin.style.display = 'inline-block';
     }
 }
-
 
 // Chama no carregamento da página
 checkLogin();
@@ -86,6 +86,7 @@ async function fetchStores() {
         const response = await fetch('http://localhost:3000/lojas');
         if (!response.ok) throw new Error("Erro ao carregar lojas da API");
         const stores = await response.json();
+        lojasCache = stores; // 🔧 salva cache
         return stores;
     } catch (err) {
         console.error(err);
@@ -95,6 +96,9 @@ async function fetchStores() {
 
 function renderStores(stores) {
     list.innerHTML = '';
+    storeMarkers.forEach(m => map?.removeLayer(m));
+    storeMarkers = [];
+
     if (stores.length === 0) {
         storeSectionTitle.style.display = "none";
         return;
@@ -103,9 +107,11 @@ function renderStores(stores) {
     storeSectionTitle.style.display = "block";
 
     stores.forEach(s => {
-        L.marker([s.lat, s.lon])
-            .addTo(map)
-            .bindPopup(`<strong>${s.nome}</strong><br>${s.endereco}`);
+        if (s.lat && s.lon && map) {
+            const marker = L.marker([s.lat, s.lon]).addTo(map);
+            marker.bindPopup(`<strong>${s.nome}</strong><br>${s.endereco}`);
+            storeMarkers.push(marker);
+        }
 
         const card = document.createElement('div');
         card.className = 'card';
@@ -122,10 +128,16 @@ function renderStores(stores) {
             <p class="descricao">${s.descricao}</p>
             <div class="bottom-row">
               <div class="categoria">${s.categoria}</div>
-                <a class="ver-mais" href="HTML/perfil.html?id=${s.id}">Ver mais</a>
+              <a class="ver-mais" href="HTML/perfil.html?id=${s.id}">Ver mais</a>
             </div>
           </div>
         `;
+
+        // 🔧 Permite clicar em qualquer lugar do card
+        card.addEventListener('click', () => {
+            window.location.href = `HTML/perfil.html?id=${s.id}`;
+        });
+
         list.appendChild(card);
     });
 }
@@ -151,16 +163,30 @@ btn.addEventListener('click', async () => {
     navigator.geolocation.getCurrentPosition(async pos => {
         const { latitude, longitude } = pos.coords;
 
+        // 🔧 Mostra o mapa e inicializa aqui (corrigido)
         mapDiv.style.display = "block";
-        setTimeout(() => map.invalidateSize(), 100);
 
-        L.marker([latitude, longitude])
+        if (!map) {
+            map = L.map('map').setView([latitude, longitude], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+        } else {
+            map.setView([latitude, longitude], 15);
+        }
+
+        // 🔧 Atualiza marcador do usuário
+        if (userMarker) map.removeLayer(userMarker);
+        userMarker = L.marker([latitude, longitude])
             .addTo(map)
             .bindPopup("Você está aqui")
             .openPopup();
 
-        map.setView([latitude, longitude], 15);
+        // 🔧 Garante renderização correta
+        setTimeout(() => map.invalidateSize(), 200);
 
+        // 🔧 Carrega e exibe lojas
         const stores = await fetchStores();
         renderStores(stores);
 
@@ -170,4 +196,16 @@ btn.addEventListener('click', async () => {
         alert("Não foi possível obter sua localização: " + err.message);
         btn.textContent = "📍 Usar minha localização";
     }, { enableHighAccuracy: true });
+});
+
+// ==========================
+// 🔥 Carregar lojas automaticamente ao abrir a página
+// ==========================
+window.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const stores = await fetchStores();
+        renderStores(stores);
+    } catch (err) {
+        console.error("Erro ao carregar lojas automaticamente:", err);
+    }
 });

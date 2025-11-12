@@ -7,8 +7,6 @@ const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const crypto = require('crypto');
 const path = require('path');
-const fetch = require('node-fetch'); // ✅ Adicionado para baixar imagens da URL
-const { Readable } = require('stream');
 
 const Usuario = require('./models/Usuario');
 const Loja = require('./models/Loja');
@@ -77,6 +75,97 @@ function autenticarToken(req, res, next) {
     next();
   });
 }
+
+// ==========================
+// Dados de exemplo (fallback)
+// ==========================
+let lojas = [
+  {
+    id: 1,
+    nome: "Padaria do João",
+    categoria: "padaria",
+    descricao: "Pães fresquinhos e bolos caseiros todos os dias.",
+    endereco: "Rua das Flores, 120",
+    lat: -23.552,
+    lon: -46.634,
+    imagem: "https://images.unsplash.com/photo-1587241321921-91e5b7a1a8b9",
+    logo: "https://cdn-icons-png.flaticon.com/512/3075/3075977.png",
+    abre: "06:00",
+    fecha: "20:00",
+    motoboy: true,
+    telefone: "11123456789"
+  },
+  {
+    id: 2,
+    nome: "Mercadinho da Ana",
+    categoria: "mercado",
+    descricao: "Tudo o que você precisa sem sair do bairro.",
+    endereco: "Av. Brasil, 45",
+    lat: -23.548,
+    lon: -46.628,
+    imagem: "https://images.unsplash.com/photo-1580910051073-dedbdfd3b9f8",
+    logo: "https://cdn-icons-png.flaticon.com/512/2331/2331970.png",
+    abre: "08:00",
+    fecha: "22:00",
+    motoboy: false,
+    telefone: "5511987654321"
+  },
+  {
+    id: 3,
+    nome: "Farmácia Popular",
+    categoria: "farmacia",
+    descricao: "Remédios e cuidados de saúde com atendimento humanizado.",
+    endereco: "Rua Central, 99",
+    lat: -23.556,
+    lon: -46.630,
+    imagem: "https://images.unsplash.com/photo-1587854692152-93dcf38a42c2",
+    logo: "https://cdn-icons-png.flaticon.com/512/2966/2966327.png",
+    abre: "07:00",
+    fecha: "23:00",
+    motoboy: true,
+    telefone: "5511911223344"
+  },
+  {
+    id: 4,
+    nome: "Lanchonete Sabor Local",
+    categoria: "lanchonete",
+    descricao: "Lanches rápidos e deliciosos feitos com carinho.",
+    endereco: "Praça das Árvores, 15",
+    lat: -23.550,
+    lon: -46.635,
+    imagem: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
+    logo: "https://cdn-icons-png.flaticon.com/512/857/857681.png",
+    abre: "10:00",
+    fecha: "02:00",
+    motoboy: true,
+    telefone: "5511999887766"
+  }
+];
+
+// 🟢 Produtos por loja (dados fixos por enquanto)
+const produtos = {
+  1: [
+    { nome: "Pão Francês", preco: 0.80 },
+    { nome: "Bolo de Fubá", preco: 12.00 },
+  ],
+  2: [
+    { nome: "Arroz 5kg", preco: 25.90 },
+    { nome: "Feijão Carioca 1kg", preco: 8.50 },
+  ],
+  3: [
+    { nome: "Dipirona 500mg", preco: 10.00 },
+    { nome: "Vitamina C 1g", preco: 15.00 },
+  ],
+  4: [
+    { nome: "X-Salada", preco: 18.00 },
+    { nome: "Coca-Cola Lata", preco: 6.00 },
+  ],
+};
+
+app.get('/lojas/:id/produtos', (req, res) => {
+  const id = parseInt(req.params.id);
+  res.json(produtos[id] || []);
+});
 
 // ==========================
 // ROTAS DE USUÁRIOS
@@ -162,16 +251,12 @@ app.get('/usuarios/minha-conta', autenticarToken, async (req, res) => {
 
     let fotoPerfilUrl = null;
     if (usuario.fotoPerfil) {
-      if (usuario.fotoPerfil.startsWith('http')) {
-        fotoPerfilUrl = usuario.fotoPerfil;
-      } else {
-        fotoPerfilUrl = `${req.protocol}://${req.get('host')}${usuario.fotoPerfil}`;
-      }
+      fotoPerfilUrl = `${req.protocol}://${req.get('host')}${usuario.fotoPerfil}`;
     }
 
     res.json({
       ...usuario.toObject(),
-      fotoPerfil: fotoPerfilUrl
+      fotoPerfil: fotoPerfilUrl,
     });
   } catch (err) {
     console.error(err);
@@ -203,7 +288,7 @@ app.post('/usuarios/upload-foto', autenticarToken, upload.single('foto'), async 
     await usuario.save();
 
     const fullUrl = `${req.protocol}://${req.get('host')}/usuarios/foto/${req.file.id}`;
-    res.json({ message: 'Foto de perfil atualizada', fotoPerfil: fullUrl });
+    res.json({ message: '✅ Foto de perfil atualizada!', fotoPerfil: fullUrl });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao salvar foto' });
@@ -240,63 +325,7 @@ app.get('/usuarios/foto/:id', async (req, res) => {
 });
 
 // ==========================
-// NOVA ROTA - Atualizar foto via URL (com salvamento real no Mongo)
-// ==========================
-app.put('/usuarios/foto-url', autenticarToken, async (req, res) => {
-  try {
-    const { fotoUrl } = req.body;
-    if (!fotoUrl) return res.status(400).json({ error: 'A URL da imagem é obrigatória' });
-
-    // Baixa a imagem
-    const response = await fetch(fotoUrl);
-    if (!response.ok) return res.status(400).json({ error: 'Falha ao acessar a imagem da URL' });
-
-    const contentType = response.headers.get('content-type') || 'image/jpeg';
-    const buffer = await response.arrayBuffer();
-
-    const usuario = await Usuario.findById(req.user.id);
-    if (!usuario) return res.status(404).json({ error: 'Usuário não encontrado' });
-
-    // Remove imagem anterior (se era do GridFS)
-    if (usuario.fotoPerfil && usuario.fotoPerfil.includes('/usuarios/foto/')) {
-      try {
-        const oldFileId = new mongoose.Types.ObjectId(usuario.fotoPerfil.split('/').pop());
-        gfsBucket.delete(oldFileId, (err) => {
-          if (err) console.error('Erro ao deletar imagem antiga:', err);
-        });
-      } catch (err) {
-        console.error('Erro ao processar imagem antiga:', err);
-      }
-    }
-
-    // Salva nova imagem no GridFS
-    const filename = crypto.randomBytes(16).toString('hex') + '.jpg';
-    const uploadStream = gfsBucket.openUploadStream(filename, { contentType });
-    Readable.from(Buffer.from(buffer)).pipe(uploadStream);
-
-    uploadStream.on('error', (err) => {
-      console.error('Erro ao salvar imagem:', err);
-      res.status(500).json({ error: 'Erro ao salvar imagem no servidor' });
-    });
-
-    uploadStream.on('finish', async (file) => {
-      usuario.fotoPerfil = `/usuarios/foto/${file._id}`;
-      await usuario.save();
-
-      const fullUrl = `${req.protocol}://${req.get('host')}/usuarios/foto/${file._id}`;
-      res.json({
-        message: '✅ Foto atualizada com sucesso via URL!',
-        fotoPerfil: fullUrl,
-      });
-    });
-  } catch (err) {
-    console.error('Erro ao atualizar foto via URL:', err);
-    res.status(500).json({ error: 'Erro ao atualizar foto via URL' });
-  }
-});
-
-// ==========================
-// ROTAS DE LOJAS (originais)
+// ROTAS DE LOJAS
 // ==========================
 app.post(
   '/lojas/cadastrar',
@@ -351,19 +380,44 @@ app.get('/lojas', async (req, res) => {
     if (categoria) filtro.categoria = new RegExp(categoria, 'i');
     if (nome) filtro.nome = new RegExp(nome, 'i');
 
-    const lojas = await Loja.find(filtro).populate('dono', 'nome email');
-    res.json(lojas);
+    const lojasDb = await Loja.find(filtro).populate('dono', 'nome email');
+
+    if (!lojasDb || lojasDb.length === 0) {
+      console.log('⚠️ Nenhuma loja no DB — retornando exemplos locais');
+      return res.json(lojas);
+    }
+
+    res.json(lojasDb);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao listar lojas' });
   }
 });
 
+// ✅ Rota ajustada para suportar tanto Mongo quanto mocks
 app.get('/lojas/:id', async (req, res) => {
   try {
-    const loja = await Loja.findById(req.params.id).populate('dono', 'nome email');
-    if (!loja) return res.status(404).json({ error: 'Loja não encontrada' });
-    res.json(loja);
+    let loja = await Loja.findById(req.params.id).populate('dono', 'nome email');
+
+    if (!loja) {
+      loja = lojas.find(l => l.id === parseInt(req.params.id));
+      if (!loja) return res.status(404).json({ error: 'Loja não encontrada' });
+    }
+
+    res.json({
+      id: loja._id || loja.id,
+      nome: loja.nome,
+      descricao: loja.descricao,
+      endereco: loja.endereco,
+      abre: loja.abre || '08:00',
+      fecha: loja.fecha || '18:00',
+      motoboy: loja.motoboy || false,
+      telefone: loja.telefone || '',
+      banner: loja.banner || loja.imagem || '',
+      logo: loja.logo || loja.imagem || '',
+      categoria: loja.categoria || '',
+      dono: loja.dono || null
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao buscar loja' });

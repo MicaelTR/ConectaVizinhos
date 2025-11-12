@@ -12,7 +12,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="../IMAGENS/icon.png">
 
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
@@ -22,11 +22,13 @@
       <img src="../IMAGENS/logo.png" alt="Logo Conecta Vizinhos">
       <h1>Conecta Vizinhos</h1>
     </div>
+
     <div class="menu-toggle" id="menu-toggle">
       <span></span>
       <span></span>
       <span></span>
     </div>
+
     <nav id="nav">
       <ul>
         <li><a href="../index.html">Início</a></li>
@@ -44,13 +46,20 @@
       <!-- Foto de perfil -->
       <div class="profile-section">
         <img class="profile-pic" id="profileImage" src="../IMAGENS/avatar.png" alt="Foto de Perfil">
-        <!-- 🟢 NOVA SEÇÃO: inserir URL da imagem -->
-        <form id="uploadForm" class="upload-form">
-          <input type="url" id="fotoUrlInput" placeholder="Cole aqui a URL da imagem" required
-            style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc;">
+
+        <!-- Upload somente via arquivo (estilizado) -->
+        <form id="fileForm" class="upload-form" enctype="multipart/form-data">
+          <!-- input escondido -->
+          <input type="file" id="fileInput" name="foto" accept="image/*" required>
+
+          <!-- botão estilizado -->
+          <label for="fileInput" class="custom-file-label">
+            <i class="fa-solid fa-image"></i> Escolher Foto
+          </label>
+
           <div class="upload-buttons">
             <button type="submit" class="btn save-btn">
-              <i class="fa-solid fa-floppy-disk"></i> Salvar Imagem
+              <i class="fa-solid fa-floppy-disk"></i> Enviar Nova Foto
             </button>
           </div>
         </form>
