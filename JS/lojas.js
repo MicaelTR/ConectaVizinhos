@@ -126,30 +126,30 @@ async function carregarLojas() {
 }
 
 // ================================
-//  PESQUISA POR NOME
+//  PESQUISA POR NOME (FRONT-END)
 // ================================
 const searchInput = document.getElementById('searchInput');
 
 if (searchInput) {
-  searchInput.addEventListener('input', async (e) => {
-    const valor = e.target.value.trim();
+  searchInput.addEventListener('input', (e) => {
+    const valor = e.target.value.trim().toLowerCase();
 
-    // se o campo estiver vazio, mostra todas
     if (valor === "") {
       renderStores(lojasCache);
       return;
     }
 
-    try {
-      const res = await fetch(`http://localhost:3000/lojas?nome=${encodeURIComponent(valor)}`);
-      if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
-      const data = await res.json();
-      renderStores(data);
-    } catch (err) {
-      console.error("❌ Erro na pesquisa:", err);
-    }
+    // filtra diretamente as lojas carregadas
+    const filtradas = lojasCache.filter(loja =>
+      loja.nome.toLowerCase().includes(valor) ||
+      (loja.descricao && loja.descricao.toLowerCase().includes(valor)) ||
+      (loja.categoria && loja.categoria.toLowerCase().includes(valor))
+    );
+
+    renderStores(filtradas);
   });
 }
+
 
 // ================================
 //  BOTÃO LOCALIZAÇÃO

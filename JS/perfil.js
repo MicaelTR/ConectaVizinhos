@@ -28,17 +28,18 @@ async function carregarLoja() {
     const res = await fetch(`${API_URL}/lojas/${lojaId}`);
     const loja = await res.json();
 
-    document.getElementById("banner").src = loja.banner;
+    document.getElementById("banner").src = loja.imagem;
     document.getElementById("logo").src = loja.logo;
     document.getElementById("nome").textContent = loja.nome;
     document.getElementById("descricao").textContent = loja.descricao;
     document.getElementById("endereco").textContent = `📍 ${loja.endereco}`;
-    document.getElementById("horario").textContent = `🕒 ${loja.abre} - ${loja.fecha}`;
+    document.getElementById("horario").textContent = `🕒 ${loja.horario}`;
     document.getElementById("motoboy").textContent = loja.motoboy
       ? "🛵 Possui motoboy próprio"
       : "🚫 Não possui motoboy próprio";
 
     lojaTelefone = loja.telefone || "";
+    console.log(loja)
 
     carregarProdutos();
   } catch (err) {

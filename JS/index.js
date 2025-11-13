@@ -199,6 +199,34 @@ btn.addEventListener('click', async () => {
 });
 
 // ==========================
+// 🔍 FUNCIONALIDADE DE PESQUISA
+// ==========================
+const searchInput = document.querySelector('.search-box input');
+
+if (searchInput) {
+  searchInput.addEventListener('input', () => {
+    const termo = searchInput.value.trim().toLowerCase();
+
+    // Se o campo estiver vazio → mostra todas as lojas
+    if (termo === "") {
+      renderStores(lojasCache);
+      return;
+    }
+
+    // Filtra lojas por nome, categoria ou descrição
+    const filtradas = lojasCache.filter(loja =>
+      (loja.nome && loja.nome.toLowerCase().includes(termo)) ||
+      (loja.categoria && loja.categoria.toLowerCase().includes(termo)) ||
+      (loja.descricao && loja.descricao.toLowerCase().includes(termo))
+    );
+
+    // Exibe o resultado
+    renderStores(filtradas);
+  });
+}
+
+
+// ==========================
 // 🔥 Carregar lojas automaticamente ao abrir a página
 // ==========================
 window.addEventListener("DOMContentLoaded", async () => {

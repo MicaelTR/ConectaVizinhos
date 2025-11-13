@@ -90,7 +90,7 @@ let lojas = [
     lon: -46.634,
     imagem: "https://images.unsplash.com/photo-1587241321921-91e5b7a1a8b9",
     logo: "https://cdn-icons-png.flaticon.com/512/3075/3075977.png",
-    abre: "06:00",
+    abre: "6:00",
     fecha: "20:00",
     motoboy: true,
     telefone: "11123456789"
@@ -143,24 +143,97 @@ let lojas = [
 ];
 
 // 🟢 Produtos por loja (dados fixos por enquanto)
+// ===============================
+// Produtos simulados por loja
+// ===============================
 const produtos = {
   1: [
-    { nome: "Pão Francês", preco: 0.80 },
-    { nome: "Bolo de Fubá", preco: 12.00 },
+    {
+      nome: "Pão Francês",
+      preco: 0.80,
+      imagem: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      nome: "Bolo de Fubá",
+      preco: 12.00,
+      imagem: "https://images.unsplash.com/photo-1587854692152-93dcf38a42c2?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      nome: "Rosquinha Caseira",
+      preco: 8.50,
+      imagem: "https://images.unsplash.com/photo-1607532941433-304659e819a0?auto=format&fit=crop&w=400&q=80"
+    }
   ],
+
   2: [
-    { nome: "Arroz 5kg", preco: 25.90 },
-    { nome: "Feijão Carioca 1kg", preco: 8.50 },
+    {
+      nome: "Arroz Tipo 1 5kg",
+      preco: 23.90,
+      imagem: "https://images.unsplash.com/photo-1600180758890-6b94519a8ba9?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      nome: "Feijão Carioca 1kg",
+      preco: 7.80,
+      imagem: "https://images.unsplash.com/photo-1621996346565-94e2a697b3cb?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      nome: "Café Torrado 500g",
+      preco: 14.50,
+      imagem: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80"
+    }
   ],
+
   3: [
-    { nome: "Dipirona 500mg", preco: 10.00 },
-    { nome: "Vitamina C 1g", preco: 15.00 },
+    {
+      nome: "Açaí 500ml",
+      preco: 15.00,
+      imagem: "https://images.unsplash.com/photo-1590080875839-87b6e84f2fba?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      nome: "Vitamina de Banana",
+      preco: 10.00,
+      imagem: "https://images.unsplash.com/photo-1601050690597-80d25b65c4cf?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      nome: "Tigela Tropical",
+      preco: 18.00,
+      imagem: "https://images.unsplash.com/photo-1627662056889-4e9f9c23cc05?auto=format&fit=crop&w=400&q=80"
+    }
   ],
   4: [
-    { nome: "X-Salada", preco: 18.00 },
-    { nome: "Coca-Cola Lata", preco: 6.00 },
+    {
+      nome: "Pastel de Carne",
+      preco: 8.00,
+      imagem: "https://images.unsplash.com/photo-1625944230946-bf7b2dc6d60b?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      nome: "Pastel de Queijo",
+      preco: 7.50,
+      imagem: "https://images.unsplash.com/photo-1659502012513-04d8d3a5c16b?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      nome: "Coxinha de Frango",
+      preco: 6.00,
+      imagem: "https://images.unsplash.com/photo-1604909053288-1961e4b03a7a?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      nome: "Refrigerante Lata 350ml",
+      preco: 5.00,
+      imagem: "https://images.unsplash.com/photo-1628147428054-46d5a7c3f8ac?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      nome: "Suco Natural de Laranja",
+      preco: 7.00,
+      imagem: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      nome: "Empada de Palmito",
+      preco: 6.50,
+      imagem: "https://images.unsplash.com/photo-1604909053288-1961e4b03a7a?auto=format&fit=crop&w=400&q=80"
+    }
   ],
 };
+
 
 app.get('/lojas/:id/produtos', (req, res) => {
   const id = parseInt(req.params.id);
@@ -394,35 +467,76 @@ app.get('/lojas', async (req, res) => {
   }
 });
 
-// ✅ Rota ajustada para suportar tanto Mongo quanto mocks
-app.get('/lojas/:id', async (req, res) => {
+// =======================================
+//  ROTA: Buscar loja por ID (DB ou lista local)
+// =======================================
+app.get("/lojas/:id", async (req, res) => {
   try {
-    let loja = await Loja.findById(req.params.id).populate('dono', 'nome email');
+    const { id } = req.params;
+    console.log("🟡 ID recebido:", id);
 
-    if (!loja) {
-      loja = lojas.find(l => l.id === parseInt(req.params.id));
-      if (!loja) return res.status(404).json({ error: 'Loja não encontrada' });
+    // 🔹 Tenta buscar no MongoDB primeiro
+    let lojaDb = null;
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      lojaDb = await Loja.findById(id).populate('dono', 'nome email');
     }
 
+    if (lojaDb) {
+      console.log("🟢 Loja encontrada no MongoDB:", lojaDb.nome);
+
+      // Monta URLs das imagens (logo/banner)
+      const logoUrl = lojaDb.logoId
+        ? `${req.protocol}://${req.get('host')}/lojas/imagem/${lojaDb.logoId}`
+        : "https://via.placeholder.com/100x100?text=Logo";
+
+      const bannerUrl = lojaDb.bannerId
+        ? `${req.protocol}://${req.get('host')}/lojas/imagem/${lojaDb.bannerId}`
+        : "https://via.placeholder.com/800x400?text=Sem+Imagem";
+
+      return res.json({
+        id: lojaDb._id,
+        nome: lojaDb.nome || "Nome não informado",
+        descricao: lojaDb.descricao || "",
+        categoria: lojaDb.categoria || "",
+        endereco: lojaDb.endereco || "Endereço não informado",
+        telefone: lojaDb.telefone || "Telefone não informado",
+        horario: lojaDb.horario || "Horário não informado",
+        motoboy: lojaDb.motoboy || false,
+        imagem: bannerUrl,
+        logo: logoUrl,
+        produtos: produtos[lojaDb.id] || [],
+      });
+    }
+
+    // 🔹 Se não achar no banco, procura na lista fixa
+    const lojaLocal = lojas.find(l => String(l.id) === String(id));
+    if (!lojaLocal) {
+      console.warn("⚠️ Loja não encontrada:", id);
+      return res.status(404).json({ error: "Loja não encontrada" });
+    }
+
+    console.log("🟢 Loja encontrada na lista local:", lojaLocal.nome);
+
     res.json({
-      id: loja._id || loja.id,
-      nome: loja.nome,
-      descricao: loja.descricao,
-      endereco: loja.endereco,
-      abre: loja.abre || '08:00',
-      fecha: loja.fecha || '18:00',
-      motoboy: loja.motoboy || false,
-      telefone: loja.telefone || '',
-      banner: loja.banner || loja.imagem || '',
-      logo: loja.logo || loja.imagem || '',
-      categoria: loja.categoria || '',
-      dono: loja.dono || null
+      id: lojaLocal.id,
+      nome: lojaLocal.nome,
+      descricao: lojaLocal.descricao,
+      categoria: lojaLocal.categoria,
+      endereco: lojaLocal.endereco,
+      telefone: lojaLocal.telefone || "Telefone não informado",
+      horario: `${lojaLocal.abre} - ${lojaLocal.fecha}`,
+      motoboy: lojaLocal.motoboy,
+      imagem: lojaLocal.imagem || "https://via.placeholder.com/800x400?text=Sem+Imagem",
+      logo: lojaLocal.logo || "https://via.placeholder.com/100x100?text=Logo",
+      produtos: produtos[lojaLocal.id] || []
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Erro ao buscar loja' });
+    console.error("❌ Erro ao buscar loja:", err);
+    res.status(500).json({ error: "Erro ao buscar loja", detalhe: err.message });
   }
 });
+
 
 app.get('/lojas/imagem/:id', async (req, res) => {
   try {
@@ -457,4 +571,5 @@ app.get('/lojas/imagem/:id', async (req, res) => {
 // ==========================
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+  console.log(mongoURI)
 });

@@ -309,6 +309,7 @@ nav a:hover {
 .card-link {
   list-style: none;
   text-decoration: none;
+  color: #264653;
 }
 
 .card {
