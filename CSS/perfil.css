@@ -549,6 +549,108 @@ main {
 }
 
 
+/* Ajustes específicos para mobile: reduzir gaps e evitar overflow no modal */
+@media (max-width: 480px) {
+  .itens-carrinho {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .item-carrinho {
+    display: flex;
+    align-items: center;
+    gap: 8px;                /* menos espaço entre elementos */
+    padding: 8px;
+    width: 100%;
+    overflow: hidden;        /* evita scroll lateral interno */
+    box-sizing: border-box;
+  }
+
+  .item-carrinho img {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  /* Conteúdo principal: permite encolher sem forçar overflow */
+  .item-carrinho .info-produto {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;            /* CRUCIAL para permitir truncamento */
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+
+  /* Nome: cortar com reticências se necessário */
+  .item-carrinho .nome-produto {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: #264653;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  /* Linha com preço + controles em uma mesma linha compacta */
+  .item-carrinho .linha-acao {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .item-carrinho .preco-produto {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #2a9d8f;
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-left: 6px;
+  }
+
+  /* Controles de quantidade mais compactos */
+  .item-carrinho .quantidade-produto {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .item-carrinho .quantidade-produto button {
+    padding: 4px 6px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+  }
+
+  .item-carrinho .quantidade-produto span {
+    min-width: 20px;
+    text-align: center;
+    font-size: 0.92rem;
+  }
+
+  /* Lixeira: manter dentro do card e sem empurrar layout */
+  .item-carrinho .remover-produto {
+    font-size: 1.1rem;
+    color: #e63946;
+    margin-left: 8px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  /* Força o modal a não permitir overflow horizontal */
+  .modal-carrinho-content,
+  .modal-carrinho {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden !important;
+  }
+}
+
+
 /* ====== RODAPÉ ====== */
 footer {
   background-color: #264653;
