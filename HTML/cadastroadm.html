@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página de Cadastro</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../CSS/cadastroadm.css">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="../IMAGENS/icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../IMAGENS/icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../IMAGENS/icon.png">
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+  <!-- Botão de voltar -->
+  <button class="voltar-btn" onclick="history.back()">
+    <i data-lucide="arrow-left"></i>
+  </button>
+
+  <div class="cadastro-card">
+
+    <!-- 🔥 FORMULÁRIO CORRETO -->
+    <form id="form-admin" class="cadastro-form">
+
+      <h1>Cadastre-se</h1>
+
+      <h4>Nome</h4>
+      <input type="text" class="input-nome" placeholder="Digite seu nome" required>
+
+      <h4>E-mail</h4>
+      <input type="email" class="input-email" placeholder="Digite seu e-mail" required>
+
+      <h4>Senha</h4>
+      <div class="password-wrapper">
+        <input type="password" class="input-senha" placeholder="Digite sua senha" required>
+        <button type="button" class="toggle-senha" aria-label="Mostrar senha">
+          <i data-lucide="eye"></i>
+        </button>
+      </div>
+
+      <!-- 🔥 BOTÃO SUBMIT AGORA ESTÁ DENTRO DO FORM -->
+      <button type="submit" class="button-confirm">Confirmar</button>
+    </form>
+
+    <!-- Cancelar continua fora -->
+    <div class="end-buttons">
+      <button type="button" class="button-cancel">Cancelar</button>
+    </div>
+
+  </div>
+
+  <script src="../JS/cadastroadm.js"></script>
+
+  <script>
+    lucide.createIcons();
+
+    const senhaInput = document.querySelector(".input-senha");
+    const toggleButton = document.querySelector(".toggle-senha");
+    const toggleIcon = toggleButton.querySelector("i");
+
+    toggleButton.addEventListener("click", () => {
+      const mostrando = senhaInput.type === "text";
+      senhaInput.type = mostrando ? "password" : "text";
+      toggleIcon.setAttribute("data-lucide", mostrando ? "eye" : "eye-off");
+      lucide.createIcons();
+    });
+  </script>
+
+</body>
+
+</html>

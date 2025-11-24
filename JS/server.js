@@ -13,6 +13,7 @@ const Loja = require('./models/Loja');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const Admin = require('./models/Admin'); 
 
 // ==========================
 // Middlewares
@@ -367,6 +368,41 @@ app.post('/usuarios/upload-foto', autenticarToken, upload.single('foto'), async 
     res.status(500).json({ error: 'Erro ao salvar foto' });
   }
 });
+
+// ==========================
+// CADASTRO DE ADMINISTRADOR
+// ==========================
+app.post('/admin/cadastro', async (req, res) => {
+  try {
+    const { nome, email, senha } = req.body;
+
+    if (!nome || !email || !senha) {
+      return res.status(400).json({ error: 'Preencha todos os campos obrigatórios' });
+    }
+
+    // verifica se já existe admin com esse email
+    const existente = await Admin.findOne({ email });
+    if (existente) return res.status(400).json({ error: 'E-mail já cadastrado como admin' });
+
+    const novoAdmin = new Admin({
+      nome,
+      email,
+      senha,
+      tipo: "admin"
+    });
+
+    await novoAdmin.save();
+
+    res.status(201).json({ message: '✅ Administrador criado com sucesso!' });
+
+  } catch (err) {
+    console.error('Erro no cadastro de admin:', err);
+    res.status(500).json({ error: 'Erro interno ao cadastrar admin' });
+  }
+});
+
+
+
 
 // Servir imagem do GridFS
 app.get('/usuarios/foto/:id', async (req, res) => {

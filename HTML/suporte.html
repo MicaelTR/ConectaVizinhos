@@ -67,9 +67,10 @@
         <h2>Ainda precisa de ajuda?</h2>
         <p>Se não encontrou uma resposta, fale conosco. Nossa equipe responderá o mais breve possível.</p>
 
-        <form id="form-suporte">
+        <form id="form-suporte" action="https://formsubmit.co/contato@conectavizinhos01@gmail.com" method="POST">
+
             <label>Categoria</label>
-            <select id="categoria">
+            <select name="categoria" required>
                 <option>Problema com pedido</option>
                 <option>Problema com pagamento</option>
                 <option>Avaliação de comércio</option>
@@ -77,13 +78,23 @@
             </select>
 
             <label>Seu e-mail</label>
-            <input type="email" id="email" placeholder="voce@email.com" required>
+            <input type="email" name="email" placeholder="voce@email.com" required>
 
             <label>Descreva seu problema</label>
-            <textarea id="mensagem" rows="5" placeholder="Digite sua mensagem aqui..." required></textarea>
+            <textarea name="mensagem" rows="5" placeholder="Digite sua mensagem aqui..." required></textarea>
+
+            <!-- CONFIGURAÇÕES IMPORTANTES -->
+            <input type="hidden" name="_subject" value="📩 Nova solicitação de suporte">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_template" value="table">
+
+            <!-- REDIRECIONAMENTO APÓS O ENVIO -->
+            <input type="hidden" name="_next" value="../HTML/obrigado.html">
 
             <button type="submit">Enviar Mensagem</button>
         </form>
+
+
     </main>
 
     <!-- FOOTER -->
