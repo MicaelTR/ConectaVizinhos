@@ -2,17 +2,15 @@
 //  Conecta Vizinhos - Lojas
 // ================================
 
+
 // ELEMENTOS
 const mapDiv = document.getElementById('map');
 const btnLocate = document.getElementById('btnLocate');
 const list = document.getElementById('storeList');
 const title = document.getElementById('storeSectionTitle');
 
-
-
 const menuToggle = document.getElementById('menu-toggle');
 const nav = document.getElementById('nav');
-
 
 menuToggle.addEventListener('click', () => {
   nav.classList.toggle('open');
@@ -72,7 +70,7 @@ function renderStores(stores) {
     card.className = 'card';
     card.innerHTML = `
     <a class="card-link" href="perfil.html?id=${s.id}">  
-      <img src="${s.imagem}" alt="${s.nome}" class="main"">
+      <img src="${s.imagem}" alt="${s.nome}" class="main">
         <div class="card-content">
           <div class="info">
             <img src="${s.logo}" class="logo-loja" alt="Logo ${s.nome}">
@@ -81,7 +79,9 @@ function renderStores(stores) {
               <div class="small">${s.endereco}</div>
             </div>
           </div>
+
           <p class="descricao">${s.descricao || ""}</p>
+
           <div class="bottom-row">
             <div class="categoria">${s.categoria}</div>
             <a class="ver-mais" href="perfil.html?id=${s.id}">Ver mais</a>
@@ -110,10 +110,12 @@ async function carregarLojas() {
   try {
     const res = await fetch('http://localhost:3000/lojas');
     if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
+
     const data = await res.json();
 
-    lojasCache = data; // salva no cache para filtros
+    lojasCache = data; 
     renderStores(data);
+
   } catch (err) {
     console.error("❌ Erro na API:", err);
     list.innerHTML = `
@@ -126,7 +128,7 @@ async function carregarLojas() {
 }
 
 // ================================
-//  PESQUISA POR NOME (FRONT-END)
+//  PESQUISA POR NOME
 // ================================
 const searchInput = document.getElementById('searchInput');
 
@@ -139,7 +141,6 @@ if (searchInput) {
       return;
     }
 
-    // filtra diretamente as lojas carregadas
     const filtradas = lojasCache.filter(loja =>
       loja.nome.toLowerCase().includes(valor) ||
       (loja.descricao && loja.descricao.toLowerCase().includes(valor)) ||
@@ -149,7 +150,6 @@ if (searchInput) {
     renderStores(filtradas);
   });
 }
-
 
 // ================================
 //  BOTÃO LOCALIZAÇÃO
@@ -189,12 +189,12 @@ btnLocate.addEventListener('click', () => {
 });
 
 // ================================
-//  FILTROS
+//  FILTROS (AGORA COM ENTREGADOR)
 // ================================
 document.getElementById('btnFilter').addEventListener('click', () => {
   const categoria = document.getElementById('filterCategory').value;
-  const avaliacaoMin = parseFloat(document.getElementById('filterRating').value);
   const horario = document.getElementById('filterHorario').value;
+  const entregador = document.getElementById('filterEntregador').value;
 
   if (!lojasCache || lojasCache.length === 0) {
     alert("Nenhuma loja carregada ainda!");
@@ -205,13 +205,10 @@ document.getElementById('btnFilter').addEventListener('click', () => {
   const horaAtual = agora.getHours();
 
   const filtradas = lojasCache.filter(loja => {
-    // Filtro por categoria
+    // Categoria
     const categoriaOk = categoria === "todas" || loja.categoria === categoria;
 
-    // Filtro por avaliação (se existir no JSON)
-    const avaliacaoOk = !loja.avaliacao || loja.avaliacao >= avaliacaoMin;
-
-    // Filtro por horário (se loja tiver campos "abre" e "fecha")
+    // Horário
     let horarioOk = true;
     if (horario === "aberto" && loja.abre && loja.fecha) {
       const abre = parseInt(loja.abre.split(":")[0]);
@@ -223,7 +220,12 @@ document.getElementById('btnFilter').addEventListener('click', () => {
       horarioOk = horaAtual < abre || horaAtual >= fecha;
     }
 
-    return categoriaOk && avaliacaoOk && horarioOk;
+    // ENTREGADOR
+    let entregadorOk = true;
+    if (entregador === "sim") entregadorOk = loja.motoboy === true;
+    if (entregador === "nao") entregadorOk = loja.motoboy === false;
+
+    return categoriaOk && horarioOk && entregadorOk;
   });
 
   renderStores(filtradas);

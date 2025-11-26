@@ -13,18 +13,12 @@ const Loja = require('./models/Loja');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const Admin = require('./models/Admin'); 
-
-// ==========================
-// Middlewares
-// ==========================
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const Admin = require('./models/Admin');
 
 // ==========================
 // Conexão MongoDB + GridFS
 // ==========================
+
 const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/conecta_vizinhos';
 
 mongoose.connect(mongoURI, {
@@ -44,22 +38,36 @@ conn.on('error', (err) => {
   console.error('Erro na conexão com MongoDB:', err);
 });
 
+
+
 // ==========================
 // Configuração do Multer + GridFSStorage
 // ==========================
 const storage = new GridFsStorage({
   url: mongoURI,
-  file: (req, file) =>
-    new Promise((resolve, reject) => {
-      crypto.randomBytes(16, (err, buf) => {
-        if (err) return reject(err);
-        const filename = buf.toString('hex') + path.extname(file.originalname);
-        resolve({ filename, bucketName: 'uploads' });
+  options: { useUnifiedTopology: true },
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      const filename = `${Date.now()}-${file.originalname}`;
+      resolve({
+        filename,
+        bucketName: 'uploads'
       });
-    }),
+    });
+  }
 });
 
 const upload = multer({ storage });
+
+
+// ==========================
+// Middlewares
+// ==========================
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
 
 // ==========================
 // JWT Middleware
@@ -445,32 +453,53 @@ app.post(
   ]),
   async (req, res) => {
     try {
-      const { nome, categoria, descricao, endereco, telefone } = req.body;
+      // 1. Desestruturação: Mudança de 'motoboy' para 'temEntregador'
+      const { nome, categoria, descricao, endereco, telefone, motoboy } = req.body;
+
+      // 2. ⚠️ VALIDAÇÃO CRÍTICA DO USUÁRIO (Prevenção do Erro 500)
+      if (!req.user || !req.user.id) {
+        // Se o middleware autenticarToken falhou em carregar req.user.id
+        // ou o token é inválido/expirado, retorna 401.
+        return res.status(401).json({ error: 'Token inválido. Usuário não autenticado.' });
+      }
+
+      // 3. Validação de campos obrigatórios
       if (!nome || !categoria)
         return res.status(400).json({ error: 'Nome e categoria são obrigatórios' });
 
-      const logoFile = req.files['logo'] ? req.files['logo'][0] : null;
-      const bannerFile = req.files['banner'] ? req.files['banner'][0] : null;
+      // 4. Tratamento dos arquivos (logo e banner)
+      const logoFile = req.files && req.files['logo'] ? req.files['logo'][0] : null;
+      const bannerFile = req.files && req.files['banner'] ? req.files['banner'][0] : null;
 
+      // 5. Criação do novo modelo
       const novaLoja = new Loja({
-        dono: req.user.id,
+        dono: req.user.id, // O ID do dono, validado acima
         nome,
         categoria,
         descricao,
         endereco,
         telefone,
+        
+        // 6. Atribuição do campo Booleano: 
+        // No seu JS, você já corrigiu: formData.set("temEntregador", motoboyValue === "true");
+        // Então, 'temEntregador' em req.body deve ser um booleano (true/false) ou 'true'/'false'.
+        // O código abaixo lida com ambos os casos:
+        motoboy: motoboy === true || motoboy === 'true', 
+
         logoId: logoFile ? logoFile.id : null,
         bannerId: bannerFile ? bannerFile.id : null,
       });
 
       await novaLoja.save();
-      res.status(201).json({ message: '✅ Loja cadastrada com sucesso!', loja: novaLoja });
+      res.status(201).json({ message: 'Loja cadastrada com sucesso!', loja: novaLoja });
     } catch (err) {
       console.error('Erro ao cadastrar loja:', err);
-      res.status(500).json({ error: 'Erro ao cadastrar loja' });
+      // Erros de validação do Mongoose ou outros erros internos.
+      res.status(500).json({ error: 'Erro interno ao cadastrar loja' });
     }
   }
 );
+
 
 app.get('/lojas/minhas', autenticarToken, async (req, res) => {
   try {
