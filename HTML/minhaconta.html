@@ -110,6 +110,75 @@
         </button>
       </div>
     </section>
+
+    <!-- ======================================
+        MODAL EDITAR LOJA (COMPLETO)
+====================================== -->
+<div id="modalEditarLoja" class="modal hidden">
+  <div class="modal-content large">
+    
+    <h2><i class="fa-solid fa-pen-to-square"></i> Editar Loja</h2>
+
+    <form id="formEditarLoja" enctype="multipart/form-data">
+
+      <input type="hidden" id="editarLojaId">
+
+      <div class="form-group">
+        <label><i class="fa-solid fa-store"></i> Nome da Loja *</label>
+        <input type="text" id="editarNome" required>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fa-solid fa-tags"></i> Categoria *</label>
+        <input type="text" id="editarCategoria" required>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fa-solid fa-align-left"></i> Descrição</label>
+        <textarea id="editarDescricao"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fa-solid fa-location-dot"></i> Endereço</label>
+        <input type="text" id="editarEndereco">
+      </div>
+
+      <div class="form-group">
+        <label><i class="fa-solid fa-phone"></i> Telefone</label>
+        <input type="text" id="editarTelefone">
+      </div>
+
+      <div class="form-group">
+        <label><i class="fa-solid fa-motorcycle"></i> Possui Motoboy?</label>
+        <select id="editarMotoboy">
+          <option value="false">Não</option>
+          <option value="true">Sim</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fa-solid fa-image"></i> Logo da Loja</label>
+        <input type="file" id="editarLogo" accept="image/*">
+        <img id="editarLogoPreview" class="image-preview">
+      </div>
+
+      <div class="form-group">
+        <label><i class="fa-solid fa-image"></i> Banner da Loja</label>
+        <input type="file" id="editarBanner" accept="image/*">
+        <img id="editarBannerPreview" class="image-preview wide">
+      </div>
+
+      <div class="modal-buttons">
+        <button type="submit" class="btn salvar">Salvar Alterações</button>
+        <button type="button" class="btn cancelar" id="fecharModalEditar">Cancelar</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+
   </main>
 
   <!-- Footer -->

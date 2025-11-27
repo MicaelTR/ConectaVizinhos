@@ -500,6 +500,74 @@ app.post(
   }
 );
 
+app.put('/lojas/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const lojaAtualizada = await Loja.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true }
+    );
+
+    if (!lojaAtualizada) {
+      return res.status(404).json({ error: 'Loja não encontrada.' });
+    }
+
+    res.json({ message: 'Loja atualizada com sucesso.', loja: lojaAtualizada });
+
+  } catch (error) {
+    console.error('Erro ao atualizar loja:', error);
+    res.status(500).json({ error: 'Erro ao atualizar loja.' });
+  }
+});
+
+
+
+
+
+
+app.delete('/lojas/:id', autenticarToken, async (req, res) => {
+  try {
+    const lojaId = req.params.id;
+
+    const loja = await Loja.findOne({ _id: lojaId, dono: req.user.id });
+    if (!loja) {
+      return res.status(404).json({ error: "Loja não encontrada ou não pertence ao usuário." });
+    }
+
+    // Deletar logo
+    if (loja.logoId) {
+      try {
+        await gfsBucket.delete(new mongoose.Types.ObjectId(loja.logoId));
+      } catch (err) {
+        console.error("Erro ao deletar logo:", err);
+      }
+    }
+
+    // Deletar banner
+    if (loja.bannerId) {
+      try {
+        await gfsBucket.delete(new mongoose.Types.ObjectId(loja.bannerId));
+      } catch (err) {
+        console.error("Erro ao deletar banner:", err);
+      }
+    }
+
+    // Deletar a loja do DB
+    await Loja.deleteOne({ _id: lojaId });
+
+    res.json({ message: "Loja excluída com sucesso!" });
+
+  } catch (error) {
+    console.error("Erro ao excluir loja:", error);
+    res.status(500).json({ error: "Erro interno ao excluir loja" });
+  }
+});
+
+
+
+
 
 app.get('/lojas/minhas', autenticarToken, async (req, res) => {
   try {
