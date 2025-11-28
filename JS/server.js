@@ -97,7 +97,7 @@ let lojas = [
     endereco: "Rua das Flores, 120",
     lat: -23.552,
     lon: -46.634,
-    imagem: "https://images.unsplash.com/photo-1587241321921-91e5b7a1a8b9",
+    imagem: "https://img.freepik.com/vetores-gratis/capa-de-facebook-desenhada-a-mao-de-padaria_23-2149486152.jpg?semt=ais_hybrid&w=740&q=80",
     logo: "https://cdn-icons-png.flaticon.com/512/3075/3075977.png",
     abre: "6:00",
     fecha: "20:00",
@@ -112,7 +112,7 @@ let lojas = [
     endereco: "Av. Brasil, 45",
     lat: -23.548,
     lon: -46.628,
-    imagem: "https://images.unsplash.com/photo-1580910051073-dedbdfd3b9f8",
+    imagem: "https://img.cdndsgni.com/preview/10020281.jpg",
     logo: "https://cdn-icons-png.flaticon.com/512/2331/2331970.png",
     abre: "08:00",
     fecha: "22:00",
@@ -213,12 +213,12 @@ const produtos = {
     {
       nome: "Pastel de Carne",
       preco: 8.00,
-      imagem: "https://images.unsplash.com/photo-1625944230946-bf7b2dc6d60b?auto=format&fit=crop&w=400&q=80"
+      imagem: "https://receitatodahora.com.br/wp-content/uploads/2022/03/pastel-de-carne1.jpg"
     },
     {
       nome: "Pastel de Queijo",
       preco: 7.50,
-      imagem: "https://images.unsplash.com/photo-1659502012513-04d8d3a5c16b?auto=format&fit=crop&w=400&q=80"
+      imagem: "https://minhasreceitinhas.com.br/wp-content/uploads/2023/05/pastel-de-feira-de-queijo.jpg"
     },
     {
       nome: "Coxinha de Frango",
@@ -228,12 +228,12 @@ const produtos = {
     {
       nome: "Refrigerante Lata 350ml",
       preco: 5.00,
-      imagem: "https://images.unsplash.com/photo-1628147428054-46d5a7c3f8ac?auto=format&fit=crop&w=400&q=80"
+      imagem: "https://dispandistribuidora.agilecdn.com.br/8209_1.jpg"
     },
     {
       nome: "Suco Natural de Laranja",
       preco: 7.00,
-      imagem: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=400&q=80"
+      imagem: "https://phygital-files.mercafacil.com/catalogo/uploads/produto/suco_de_laranja_prat_s_integral_900ml_8ad33694-3253-4b50-abe5-dd9f9efaef05.jpg"
     },
     {
       nome: "Empada de Palmito",
